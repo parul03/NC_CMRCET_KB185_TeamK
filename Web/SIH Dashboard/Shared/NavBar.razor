@@ -1,9 +1,9 @@
 ﻿@inject NavigationManager NavManager
 @inject IJSRuntime Runtime
-<nav class="navbar navbar-expand-lg navbar-dark black">
+<nav class="navbar navbar-expand-lg navbar-white bg-transparent ">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="#">SIH Dashboard</a>
+    <a class="navbar-brand" href="#" style="font-size: 2rem;">SIH Dashboard</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -32,11 +32,11 @@
         </ul>
         @if (GlobalUser.UID == null)
         {
-            <a class="nav-link navbar-right" href="/signin" style="margin-left:-10px">Login</a>
+            <a class="btn btn-primary navbar-right" href="/signin" style="margin-left:-10px">Login</a>
         }
         else
         {
-            <a class="nav-link navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
+            <a class="btn btn-primary navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
         }
 
 
@@ -47,10 +47,9 @@
 </nav>
 
 <style>
-    body {
-        background-image: url('./images/blur.jpg');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        background-position: 0% 0%;
+    .navbar{
+        box-shadow: none;
+        font-size: 2rem;
+        font-family: 'Dosis', sans-serif;
     }
 </style>
