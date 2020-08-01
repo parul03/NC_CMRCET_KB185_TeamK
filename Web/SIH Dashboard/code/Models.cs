@@ -35,6 +35,7 @@ namespace SIH_Dashboard
         public string Address { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string District { get; set; }
     }
 
     public class Feedbacks
