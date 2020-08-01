@@ -1,5 +1,5 @@
 # KB185_TeamK
 
-Mobile App in Mobile/
+Mobile App in Mobile
 
-Web Dashboard in Web/
+Web Dashboard in Web
