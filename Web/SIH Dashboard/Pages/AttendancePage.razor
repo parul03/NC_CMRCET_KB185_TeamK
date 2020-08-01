@@ -1,0 +1,125 @@
+﻿@page "/attendance"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+
+<NavBar />
+
+@if (GlobalUser.UID == null)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+
+else
+{
+    if (data != null)
+    {
+        if (data.Role == Roles.Student)
+        {
+            if (studentData == null)
+            {
+                <NewStudentRecordDialog />
+                //create student record
+            }
+            else
+            {
+                <StudentAttendanceDisplay />
+            }
+        }
+        else if (data.Role == Roles.Teacher)
+        {
+            if (teacherRecord == null)
+            {
+                <NewTeacherRecordDialog />
+                //create student record
+            }
+            else
+            {
+                <TeacherAttendanceView Record="teacherRecord" />
+            }
+        }
+        else if (data.Role == Roles.Parent)
+        {
+            if (parentRecord == null)
+            {
+                <NewParentRecord />
+                //create student record
+            }
+            else
+            {
+                <ParentAttendenceView/>
+            }
+        }
+
+    }
+    else
+    {
+        <p> Fetching Data</p>
+    }
+}
+
+@code
+{
+    UserData data { get; set; } = null;
+    StudentRecord studentData { get; set; } = null;
+    StudentRecord parentRecord { get; set; } = null;
+    TeacherRecord teacherRecord;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            if (GlobalUser.UID != null)
+            {
+                if (data == null)
+                    GetData();
+            }
+        }
+        return base.OnAfterRenderAsync(firstRender);
+
+    }
+    async void GetData()
+    {
+        data = await DatabaseHelper.ReadData<UserData>
+                (Runtime, "Users/" + GlobalUser.UID);
+        switch (data.Role)
+        {
+            case Roles.Admin:
+                break;
+            case Roles.VisitingOfficial:
+                break;
+            case Roles.Teacher:
+                GetTeacherData();
+                break;
+            case Roles.Student:
+                GetStudentData();
+                break;
+            case Roles.Parent:
+                GetParentData();
+                break;
+            default:
+                break;
+        }
+        StateHasChanged();
+    }
+    async void GetStudentData()
+    {
+        studentData = await DatabaseHelper.ReadData<StudentRecord>
+                (Runtime, "Records/" + GlobalUser.UID);
+        StateHasChanged();
+    }
+    async void GetParentData()
+    {
+        parentRecord = await DatabaseHelper.ReadData<StudentRecord>
+                (Runtime, "ParentRecords/" + GlobalUser.UID);
+        StateHasChanged();
+    }
+    async void GetTeacherData()
+    {
+        teacherRecord = await DatabaseHelper.ReadData<TeacherRecord>
+                (Runtime, "Records/" + GlobalUser.UID);
+        StateHasChanged();
+    }
+
+}

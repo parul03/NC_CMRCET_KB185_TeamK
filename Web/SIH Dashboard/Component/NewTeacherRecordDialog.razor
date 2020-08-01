@@ -1,0 +1,106 @@
+﻿@inject IJSRuntime Runtime
+@using System.Text.RegularExpressions
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">
+        Complete your profile
+    </button>
+
+<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"> Complete your profile</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <p class="black-text">School Code</p>
+          <input type="number" class="form-control mb-4" placeholder="School Code" @bind="schoolcode">
+          <p class="black-text">Class Teacher of class: eg :- 4 </p>
+          <input type="text" class="form-control mb-4" placeholder="Class" @bind="sclass">
+          <p class="black-text">Teacher Id</p>
+          <input type="number" class="form-control mb-4" placeholder="School Code" @bind="rollNo">
+          <p class="black-text">Session</p>
+          <input type="number" class="form-control mb-4" placeholder="Session" @bind="session">
+          <p class="black-text">Subjects Name (use - to separate)</p>
+          <input type="text" class="form-control mb-4" placeholder="Hindi,English" @bind="subject">
+
+          @if (ErrorMessage != null)
+          {
+              <div class="alert alert-danger" role="alert">
+                  @ErrorMessage
+              </div>
+          }
+          @if (success)
+          {
+              <div class="alert alert-success" role="alert">
+                  Successfully updated your profile
+              </div>
+          }
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=>{ StateHasChanged(); }">Close</button>
+
+          @if (!success)
+          { 
+              <button type="button" class="btn btn-primary" @onclick="upload">Save Changes</button>
+          }
+      </div>
+    </div>
+  </div>
+</div>
+
+@code
+{
+    int session;
+    int schoolcode;
+    int sclass;
+    int rollNo;
+    string ErrorMessage;
+    string subject;
+    bool success = false;
+
+    bool Validate()
+    {
+        if (session < 2020)
+        {
+            ErrorMessage = "Session cant be less than 2020";
+            return false;
+        }
+        if (sclass<=0 && sclass>12)
+        {
+            ErrorMessage = "Class Values between 1-12";
+            return false;
+        }
+        if (rollNo <= 0 )
+        {
+            ErrorMessage = "Roll no must be >=1";
+            return false;
+        }
+        if (subject.Split(',').Length <= 0)
+        {
+            ErrorMessage = "No of subject should be >=1";
+            return false;
+        }
+        if (schoolcode < 0 || schoolcode >= 100000)
+        {
+            ErrorMessage = "School Code Between 1-100000";
+            return false;
+        }
+        return true;
+    }
+
+    void upload()
+    {
+        if(Validate())
+        {
+            ErrorMessage = null;
+            success = true;
+            var record = new TeacherRecord() { Class = sclass,Subjects=subject, Session = session, SchoolCode = schoolcode,TeacherId=rollNo };
+            DatabaseHelper.WriteData(Runtime, "Records/" + GlobalUser.UID,record);
+        }
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,175 @@
+﻿@inject IJSRuntime Runtime
+<br />
+
+@if (Record != null)
+{
+    if (attendances != null)
+    {
+    <div class="container">
+        @if (Record != null)
+        {
+            <br />
+            <h5>Roll Number: @Record.TeacherId </h5>
+            <br />
+            <h6>School Code : @Record.SchoolCode</h6>
+            <br />
+            <h6>Session : @Record.Session</h6>
+            <br />
+            <h6>Class Teacher of: @(Record.Class)</h6>
+            @if (!hasUploadedToday())
+            {
+                <button type="button" class="btn btn-primary flex-center" @onclick="Upload">Save Changes</button>
+            }
+        }
+        @foreach (var student in attendances)
+        {
+            <br />
+            <MyTableHolder HeaderColor="white" ColumnNames="TableOption">
+
+                @foreach (var sub in student.SubjectAttendance)
+                {
+                    <MyTableItem>
+
+                        <MyTableValue Color="white">@sub.RollNumber</MyTableValue>
+                        <MyTableValue Color="white">@sub.SubjectName</MyTableValue>
+                        <MyTableValue Color="white">@sub.TotalPresent</MyTableValue>
+                        <MyTableValue Color="white">@sub.TotalClasses</MyTableValue>
+                        @if (!hasUploadedToday())
+                        {
+                            <MyTableValue Color="white"><input type="checkbox" class="form-control" @bind-value="sub.Todays" /></MyTableValue>
+                        }
+                        else
+                        {
+                            <MyTableValue Color="white">
+                                <p class="black-text flex-center">@(sub.Todays?"P":"A")</p>
+                            </MyTableValue>
+                        }
+                    </MyTableItem>
+
+                }
+
+            </MyTableHolder>
+        }
+        <p class="alert-dange">@attendances.Count</p>
+    </div>
+    }
+}
+else
+{
+    <p class="alert-danger">Can't Fetch the record. :(</p>
+}
+@code {
+
+    public string[] TableOption = new string[] { "Roll Number", "Subject", "Presents", "Total Presents", "Todays Attendance" };
+    [Parameter]
+    public TeacherRecord Record { get; set; }
+    List<StudentAttendance> attendances;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            if (Record != null)
+                GetStudentList();
+        }
+    }
+
+    async void CreateTeacherSubject()
+    {
+        var readUser = await DatabaseHelper.ReadList<List<UserData>>(Runtime, "Users");
+        List<UserData> v = readUser.FindAll(x => x.Role == Roles.Teacher);
+        foreach (var tr in v)
+        {
+            try
+            {
+                var srecord = await DatabaseHelper.ReadData<TeacherRecord>(Runtime, "Records/" + tr.Id + "/");
+                srecord.Subjects = "English,Hindi,Maths,Science,GK";
+                DatabaseHelper.WriteData(Runtime, "Records/" + tr.Id + "/", srecord);
+            }
+            catch(Exception)
+            {
+
+            }
+        }
+    }
+
+    async void CreateNewStudentAttendence()
+    {
+        var readUser = await DatabaseHelper.ReadList<List<UserData>>(Runtime, "Users");
+        List<UserData> v = readUser.FindAll(x => x.Role == Roles.Student);
+         
+        foreach (var studdata in v)
+        {
+            if (studdata == null)
+                continue;
+
+            var srecord = await DatabaseHelper.ReadData<StudentRecord>(Runtime, "Records/"+studdata.Id);
+            if (srecord == null)
+                continue;
+
+            if(srecord.Class==Record.Class && srecord.SchoolCode==Record.SchoolCode && srecord.Session==Record.Session)
+            {
+                if(!ContainRollNumber(srecord.RollNumber))
+                {
+                    var atain = new StudentAttendance() { SubjectAttendance = new List<SubjectAttendance>() };
+                    foreach (var sub in Record.Subjects.Split(','))
+                    {
+                        atain.SubjectAttendance.Add(new SubjectAttendance() { RollNumber = srecord.RollNumber,SubjectName=sub });
+                    }
+                    if (attendances == null)
+                        attendances = new List<StudentAttendance>();
+                    attendances.Add(atain);
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+    bool ContainRollNumber(int rno)
+    {
+        foreach (var att in attendances)
+        {
+            if (att.SubjectAttendance[0].RollNumber == rno)
+                return true;
+        }
+        return false;
+    }
+
+    async void GetStudentList()
+    {
+        attendances = await DatabaseHelper.ReadList<List<StudentAttendance>>(Runtime, "Attendance/" + Record.SchoolCode + "/" + Record.Session + "/" + Record.Class);
+        CreateNewStudentAttendence();
+        //CreateTeacherSubject();
+        StateHasChanged();
+    }
+    bool hasUploadedToday()
+    {
+        if (Record.UploadedTodays == null)
+            return false;
+        else if (Record.UploadedTodays.Date.Day != DateTime.Now.Date.Day)
+        {
+            return false;
+        }
+        return true;
+    }
+    void Upload()
+    {
+        if (attendances != null)
+        {
+            foreach (var item in attendances)
+            {
+                foreach (var sb in item.SubjectAttendance)
+                {
+                    sb.TotalClasses += 1;
+                    if (sb.Todays)
+                        sb.TotalPresent += 1;
+                    sb.Todays = false;
+                }
+            }
+            Record.UploadedTodays = DateTime.Now;
+            DatabaseHelper.WriteData(Runtime, "Attendance/" + Record.SchoolCode + "/" + Record.Session + "/" + Record.Class, attendances);
+            DatabaseHelper.WriteData(Runtime, "Records/" + GlobalUser.UID, Record);
+            StateHasChanged();
+        }
+    }
+}
