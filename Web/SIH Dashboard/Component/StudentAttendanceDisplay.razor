@@ -1,0 +1,90 @@
+﻿@inject IJSRuntime Runtime
+<br />
+    @if (attendance != null)
+    {
+        <section id="services" class="section-bg">
+          <div class="container">
+            <header class="section-header">
+              <h3>My Attendance</h3>
+          
+            </header>
+
+            <div class="row">
+
+
+                <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
+                    <div class="box">
+                        <center>
+                            <div class="progress-circle @(totspercent>50?"over50":"") p@(totspercent)">
+                                <span>@totspercent%</span>
+                                <div class="left-half-clipper">
+                                    <div class="first50-bar"></div>
+                                    <div class="value-bar"></div>
+                                </div>
+                            </div>
+                        </center>
+                        <h4 class="title">Total</h4>
+                        <h4 class="title">@totpresent / @totclass</h4>
+
+                    </div>
+                </div>
+
+                @foreach (var sub in attendance.SubjectAttendance)
+                {
+                    <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
+                        <div class="box">
+                            <center>
+                                <div class="progress-circle @(percents[sub.SubjectName]>50?"over50":"") p@(percents[sub.SubjectName])">
+                                    <span>@percents[sub.SubjectName]%</span>
+                                    <div class="left-half-clipper">
+                                        <div class="first50-bar"></div>
+                                        <div class="value-bar"></div>
+                                    </div>
+                                </div>
+                            </center>
+                            <h4 class="title">@sub.SubjectName</h4>
+                            <h4 class="title">@sub.TotalPresent / @sub.TotalClasses</h4>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+          </div>
+        </section>
+    }
+
+@code 
+{
+
+    StudentRecord record;
+    StudentAttendance attendance;
+    int totpresent = 0;
+    int totclass = 0;
+    int totspercent = 0;
+    IDictionary<string, int> percents = new Dictionary<string, int>();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+            FetchAttendance();
+    }
+
+
+    async void FetchAttendance()
+    {
+        record=await DatabaseHelper.ReadData<StudentRecord>(Runtime, "Records/" + GlobalUser.UID);
+        var attend = await DatabaseHelper.ReadData<List<StudentAttendance>>(Runtime, "Attendance/" + record.SchoolCode + "/"
+    + record.Session + "/" + record.Class);
+        attendance = attend.Find(x => x.SubjectAttendance[0].RollNumber == record.RollNumber);
+        foreach(var sub in attendance.SubjectAttendance)
+        {
+            totpresent += sub.TotalPresent;
+            totclass += sub.TotalClasses;
+            percents.Add(sub.SubjectName, (int)((sub.TotalPresent * 1.0 / sub.TotalClasses) * 100));
+        }
+        totspercent = (int)((totpresent * 1.0 / totclass) * 100);
+        StateHasChanged();
+    }
+}
