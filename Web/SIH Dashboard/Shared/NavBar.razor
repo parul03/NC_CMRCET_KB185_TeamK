@@ -1,10 +1,10 @@
-﻿@inject NavigationManager NavManager
-@inject IJSRuntime Runtime
+﻿@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
 
-<nav class="navbar navbar-expand-lg navbar-white bg-transparent ">
+<nav class="navbar navbar-expand-lg navbar-dark black">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="#" style="font-size: 2rem;">SIH Dashboard</a>
+    <a class="navbar-brand" href="#">SIH Dashboard</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -29,26 +29,42 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Pricing</a>
             </li>
-
         </ul>
         @if (GlobalUser.UID == null)
         {
-            <a class="btn btn-primary navbar-right" href="/signin" style="margin-left:-10px">Login</a>
+            <a class="nav-link navbar-right" href="/signin" style="margin-left:-10px">Login</a>
         }
+        //else if (!GlobalUser.IsVerified && NavManager.Uri.IndexOf("/verifyaccount/") < 0)
+        //{
+        //    NavManager.NavigateTo("/verifyaccount/" + GlobalUser.Email);
+        //}
         else
         {
-            <a class="btn btn-primary navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
+            <a class="nav-link navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
+            <button type="button" class="btn blue-gradient waves-effect" @onclick="Logout">Log Out</button>
         }
 
 
     </div>
+
+    @code
+{
+        void Logout()
+        {
+            GlobalUser.UID = null;
+            GlobalUser.IsVerified = false;
+            GlobalUser.Email = null;
+            NavManager.NavigateTo("/signin");
+
+        }
+    }
 
     <!-- Collapsible content -->
 
 </nav>
 
 <style>
-    .navbar{
+    .navbar {
         box-shadow: none;
         font-size: 2rem;
         font-family: 'Dosis', sans-serif;
