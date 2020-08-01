@@ -1,0 +1,130 @@
+﻿@page "/addtask"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+
+<NavBar />
+
+@if (useroptions != null)
+{
+    <div class="container my-5 py-5 z-depth-1 card">
+
+
+        <!--Section: Content-->
+        <section class="px-md-5 mx-md-5 text-center text-lg-left dark-grey-text">
+
+
+            <!--Grid row-->
+            <div class="row d-flex justify-content-center">
+
+                <!--Grid column-->
+                <div class="col-md-6">
+
+                    <!-- Default form register -->
+                    <!--form class="text-center" action="#!"-->
+
+                    <p class="h4 mb-4">Add Task</p>
+
+                    @if (ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ErrorMessage
+                        </div>
+                    }
+
+                    <div class="form-row mb-4">
+                        <label for="user">Select User</label>
+                        <select id="user" class="custom-select d-block w-100" @bind="uid">
+                            @foreach (string user in useroptions)
+                            {
+                                <option value="@user">@user</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-row mb-4">
+                        <label for="user">Select School</label>
+                        <select id="user" class="custom-select d-block w-100" @bind="schoolcode">
+                            @foreach (Schools school in schooloptions)
+                            {
+                                <option value="@school.Id">@school.Name</option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="form-row mb-4">
+                        <label for="appointmentdate">Appointment Date  </label>
+                        <input type="date" id="appointmentdate" name="appointmentdate" @bind="date">
+                    </div>
+
+                    <!-- Sign up button -->
+                    <button type="submit" class="btn btn-lg btn-primary btn-block" tabindex="0" @onclick="AddTask">Add Task</button>
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+
+        </section>
+        <!--Section: Content-->
+
+
+    </div>
+}
+else
+{
+    @if (firstrender)
+    {
+        <br />
+        <p class="black-text">Loading</p>
+    }
+    else
+    {
+        <br />
+        <p class="black-text">Failed to fetch profile data</p>
+    }
+}
+
+@code {
+    private string uid { get; set; } = "";
+    private string ErrorMessage { get; set; }
+    private string schoolcode { get; set; } = "";
+    private DateTime date { get; set; }
+    private bool firstrender = true;
+    private List<string> useroptions = null;
+    private List<Schools> schooloptions = null;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            LoadData();
+        }
+        else
+        {
+            firstrender = false;
+        }
+    }
+    async void LoadData()
+    {
+        schooloptions = await DatabaseHelper.ReadList<List<Schools>>(Runtime, "Schools/");
+        useroptions = await Runtime.InvokeAsync<List<string>>("GetIds", "VisitorVerification/", 0);
+        StateHasChanged();
+    }
+    void AddTask()
+    {
+        if (uid == "" || schoolcode == "" || date == new DateTime())
+        {
+            ErrorMessage = "Pease select an option";
+            StateHasChanged();
+        }
+        else
+        {
+            Appointment appoint = new Appointment();
+            appoint.SchoolCode = schoolcode;
+            appoint.Date = date.ToString("dd/MM/yyyy");
+            DatabaseHelper.WriteData<Appointment>(Runtime, "Tasks/" + uid, appoint);
+            ErrorMessage = "Appointment added";
+            StateHasChanged();
+        }
+    }
+}
