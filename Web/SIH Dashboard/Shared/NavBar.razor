@@ -1,10 +1,10 @@
 ﻿@inject IJSRuntime Runtime
 @inject NavigationManager NavManager
 
-<nav class="navbar navbar-expand-lg navbar-dark black">
+<nav class="navbar navbar-expand-lg navbar-primary bg-blue">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="#">SIH Dashboard</a>
+    <a class="navbar-brand" href="#" id="nbrand">SIH Dashboard</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -16,23 +16,23 @@
     <div class="collapse navbar-collapse black-text" id="basicExampleNav">
 
         <!-- Links -->
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="#" id="navopt">
                     Home
                     <!--span class="sr-only">(current)</!--span-->
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+            @* <li class="nav-item">
+                <a class="nav-link" href="#" id="nlink">Features</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
+                <a class="nav-link" href="#" id="nlink">Pricing</a>
+            </li> *@
         </ul>
         @if (GlobalUser.UID == null)
         {
-            <a class="nav-link navbar-right" href="/signin" style="margin-left:-10px">Login</a>
+            <a id="logbtn" class="btn btn blue-gradient waves-effect navbar-right" href="/signin" >Login</a>
         }
         //else if (!GlobalUser.IsVerified && NavManager.Uri.IndexOf("/verifyaccount/") < 0)
         //{
@@ -40,8 +40,8 @@
         //}
         else
         {
-            <a class="nav-link navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
-            <button type="button" class="btn blue-gradient waves-effect" @onclick="Logout">Log Out</button>
+            <a class="navbar nav-link navbar-right" href="/userinfo" >@GlobalUser.Email</a>
+            <button id="logbtn" type="button" class="btn blue-gradient waves-effect" @onclick="Logout">Log Out</button>
         }
 
 
@@ -64,9 +64,43 @@
 </nav>
 
 <style>
+       #logbtn{
+        border-radius: 30px;
+        box-shadow: none;
+        font-size: 1.5rem;
+        font-family: 'Varela Round', sans-serif;
+
+    }
     .navbar {
         box-shadow: none;
         font-size: 2rem;
-        font-family: 'Dosis', sans-serif;
+        
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    .nav-link{
+        font-size: 20px;
+    }
+    .navbar-brand{
+        font-size: 30px;
+        font-weight: bolder;
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    }
+    #nlink{
+        color: black;
+        font-weight:bolder ;
+    }
+
+    #navopt{
+    
+
+	color: #413e66;
+	font-size: 24px;
+	font-weight: bolder;
+    font-family: 'Varela Round', sans-serif;;
+
+
     }
 </style>
