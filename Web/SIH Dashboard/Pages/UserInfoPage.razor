@@ -1,8 +1,10 @@
 ﻿@page "/userinfo"
 @inject IJSRuntime Runtime
-
+@inject NavigationManager NavManager
 <NavBar />
 <!-- Card Regular -->
+<br />
+<br />
 
 @if (!string.IsNullOrWhiteSpace(GlobalUser.UID) && data != null)
 {
@@ -10,7 +12,7 @@
 
         <!-- Content -->
         <!--Card-->
-        <div class="card testimonial-card" style="max-width:500px">
+        <div class="card testimonial-card" style="max-width:500px;">
             <!--Background color-->
             <div class="card-up info-color"></div>
             <!--Avatar-->
@@ -25,6 +27,12 @@
                 <p class="dark-grey-text mt-4">
                     <i class="fas fa-quote-left pr-2"></i>@data.Role.ToString()
                 </p>
+                <p class="dark-grey-text mt-4">
+                    <i class="fas fa-quote-left pr-2"></i><a href="/user/feedbacks">Submitted Feedbacks</a>
+                </p>
+                <br />
+                <p>Terms and Conditions, Eula , Copyrights Information</p>
+                <button type="submit" @onclick="Logout" class="btn btn-info my-4 btn-block blue-gradient  waves-effect">Log Out</button>
             </div>
         </div>
         <!--Card-->
@@ -52,7 +60,16 @@ else
     }
     async void LoadUser()
     {
-        data = await DatabaseHelper.ReadData<UserData>(Runtime, "Users/" + GlobalUser.UID);
+        data = await DatabaseHelper.ReadData<UserData>
+            (Runtime, "Users/" + GlobalUser.UID);
         StateHasChanged();
+    }
+    void Logout()
+    {
+        GlobalUser.UID = null;
+        GlobalUser.IsVerified = false;
+        GlobalUser.Email = null;
+        NavManager.NavigateTo("/");
+
     }
 }
