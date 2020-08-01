@@ -1,9 +1,10 @@
 ﻿@page "/signup"
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+
 @using System.Text.RegularExpressions
 
-<NavBar/>
+<NavBar />
 
 <div class="container my-5 py-5 z-depth-1 card">
 
@@ -19,64 +20,70 @@
             <div class="col-md-6">
 
                 <!-- Default form register -->
-                <form class="text-center" action="#!">
+                <!--form class="text-center" action="#!"-->
 
-                    <p class="h4 mb-4">Sign up</p>
+                <p class="h4 mb-4">Sign up</p>
 
-                    @if (ErrorMessage != null)
-                    {
-                        <div class="alert alert-danger" role="alert">
-                            @ErrorMessage
-                        </div>
-                    }
-
-
-                    <div class="form-row mb-4">
-                        <div class="col">
-                            <!-- First name -->
-                            <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="First name" @bind="firstName">
-                        </div>
-                        <div class="col">
-                            <!-- Last name -->
-                            <input type="text" id="defaultRegisterFormLastName" class="form-control" placeholder="Last name"  @bind="lastName">
-                        </div>
+                @if (ErrorMessage != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ErrorMessage
                     </div>
-
-                    <!-- E-mail -->
-                    <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail" @bind="email">
-
-                    <!-- Password -->
-                    <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password"
-                           aria-describedby="defaultRegisterFormPasswordHelpBlock" @bind="password">
-                    <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
-                        At least 8 characters and 1 digit
-                    </small>
-
-                    <!-- Phone number -->
-                    <input type="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number"  @bind="phoneNumber"
-                           aria-describedby="defaultRegisterFormPhoneHelpBlock">
-                    <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
-                        Optional - for two step authentication
-                    </small>
+                }
 
 
-                    <!-- Sign up button -->
-                    <button type="button" class="btn btn-info my-4 btn-block blue-gradient waves-effect" @onclick="SignUp">Sign Up</button>
-                    <a href="/signin"><button class="btn purple-gradient white-text  waves-effect" >Login Instead</button></a>
+                <div class="form-row mb-4">
+                    <div class="col">
+                        <!-- name -->
+                        <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="Full name" @bind="Name">
+                    </div>
+                    <div class="col">
+                        <input type="text" list="states" class="form-control heavy-rain-gradient" placeholder="Role" @bind-value="Role">
+                        <datalist id="states" style="display:none">
+                            @foreach (var s in Enum.GetNames(typeof(Roles)))
+                            {
+                                <option value="@s"></option>
 
-                    <hr>
+                            }
+                        </datalist>
+                    </div>
+                </div>
 
-                    <!-- Terms of service -->
-                    <p>
-                        By clicking
-                        <em>Sign up</em> you agree to our
-                        <a href="" target="_blank">terms of service</a>
-                    </p>
-                    <br />
+                <!-- E-mail -->
+                <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail" @bind="email">
+
+                <!-- Password -->
+                <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password"
+                       aria-describedby="defaultRegisterFormPasswordHelpBlock" @bind="password">
+                <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                    At least 8 characters and 1 digit
+                </small>
+
+                <!-- Phone number -->
+                <input type="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number" @bind="phoneNumber"
+                       aria-describedby="defaultRegisterFormPhoneHelpBlock">
+                <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+                    Optional - for two step authentication
+                </small>
+
+
+                <!-- Sign up button -->
+                <button type="submit" class="btn btn-info my-4 btn-block blue-gradient waves-effect" tabindex="0" @onclick="SignUp">Sign Up</button>
+                <button @onclick="SigninClick" class="btn purple-gradient white-text  waves-effect">Login Instead</button>
+
+                <hr>
+
+                <!-- Terms of service -->
+                <p>
+                    By clicking
+                    <em>Sign up</em> you agree to our
+                    <a href="" target="_blank">terms of service</a>
+                </p>
+                <br />
 
 
 
-                </form>
+                <!-- /-form -->
                 <!-- Default form register -->
 
             </div>
@@ -105,8 +112,8 @@
     string ErrorMessage { get; set; }
     string email { get; set; } = "";
     string password { get; set; } = "";
-    public string firstName { get; set; } = "";
-    public string lastName { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Role { get; set; } = "";
     public string phoneNumber { get; set; } = "";
     private async void SignUp()
     {
@@ -148,9 +155,14 @@
             ErrorMessage = "Invalid Email.";
             return false;
         }
-        else if (firstName.Length < 3)
+        else if (Name.Length < 3)
         {
             ErrorMessage = "Name too short.";
+            return false;
+        }
+        else if (Role.Length <= 0 || Enum.GetNames(typeof(Roles)).ToList().IndexOf(Role) < 0)
+        {
+            ErrorMessage = "Role Selected is not valid.";
             return false;
         }
         else if (phoneNumber.Length != 10 && !string.IsNullOrWhiteSpace(phoneNumber))
@@ -165,7 +177,7 @@
     }
     public static bool IsValidEmail(string email)
     {
-        return Regex.IsMatch(email, @"\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z")
+        return Regex.IsMatch(email, @"\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z", RegexOptions.IgnoreCase)
             && Regex.IsMatch(email, @"^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*");
     }
 
@@ -174,9 +186,13 @@
         DatabaseHelper.WriteData(JsRuntime, "Users/" + GlobalUser.UID, new UserData()
         {
             Email = email,
-            Name = firstName,
-            LastName = lastName,
+            Name = Name,
+            Role = (Roles)Enum.Parse(typeof(Roles), Role, true),
             Phone = long.Parse(phoneNumber)
         });
+    }
+    private void SigninClick()
+    {
+        NavigationManager.NavigateTo("/signin");
     }
 }
