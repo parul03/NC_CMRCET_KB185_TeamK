@@ -1,0 +1,58 @@
+﻿@page "/userinfo"
+@inject IJSRuntime Runtime
+
+<NavBar />
+<!-- Card Regular -->
+
+@if (!string.IsNullOrWhiteSpace(GlobalUser.UID) && data != null)
+{
+    <div class="d-flex justify-content-center align-items-center">
+
+        <!-- Content -->
+        <!--Card-->
+        <div class="card testimonial-card" style="max-width:500px">
+            <!--Background color-->
+            <div class="card-up info-color"></div>
+            <!--Avatar-->
+            <div class="avatar mx-auto white">
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20(9).jpg" class="rounded-circle img-fluid">
+            </div>
+            <div class="card-body">
+                <!--Name-->
+                <h4 class="font-weight-bold mb-4">@data.Name</h4>
+                <hr>
+                <!--Quotation-->
+                <p class="dark-grey-text mt-4">
+                    <i class="fas fa-quote-left pr-2"></i>@data.Role.ToString()
+                </p>
+            </div>
+        </div>
+        <!--Card-->
+
+    </div>
+}
+else
+{
+    <br />
+    <p>Failed to fetch profile data</p>
+}
+
+@code
+{
+    private UserData data;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            if (data == null)
+                LoadUser();
+
+        }
+    }
+    async void LoadUser()
+    {
+        data = await DatabaseHelper.ReadData<UserData>(Runtime, "Users/" + GlobalUser.UID);
+        StateHasChanged();
+    }
+}
