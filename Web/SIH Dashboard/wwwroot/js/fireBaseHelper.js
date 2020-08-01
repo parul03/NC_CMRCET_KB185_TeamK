@@ -136,19 +136,3 @@ async function ReadData(path)
 {
     return await database.ref(path).once('value');
 }
-
-async function GetHostelRating(city)
-{
-    if (city == null)
-    {
-        return null;
-    }
-    var city =city.replace(/\b[a-z]/g, (x) => x.toUpperCase());
-    let snap = await database.ref("Cities").child(city).child("Hostels").orderByChild("Rating").once('value');
-    var hostels = [];
-    for (let key in snap.val()) {
-        hostels.push(snap.val()[key]);
-
-    }
-    return hostels;
-}

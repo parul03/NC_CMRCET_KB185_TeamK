@@ -1,0 +1,18 @@
+﻿@if (Editable)
+{
+    <td contenteditable="true" @onclick="OnClick">@ChildContent</td>
+}
+else
+{
+    <td @onclick="OnClick">@ChildContent</td>
+}
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public bool Editable { get; set; } = false;
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+
+}
