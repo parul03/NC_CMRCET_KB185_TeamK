@@ -1,0 +1,113 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+<NavBar />
+
+<div class="d-flex justify-content-center align-items-center">
+
+    <!-- Content -->
+    <!--Card-->
+    <div class="card" style="margin-top:150px;max-width:700px;min-width:250px;width:500px">
+
+        <!--Card content-->
+        <div class="card-body view view-cascade gradient-card-header rounded-lg">
+
+            <h3 class="dark-grey-text text-center">
+                <strong style="color:black">Find School</strong>
+            </h3>
+
+            <form class="mr-auto mb-4">
+
+                <div>
+                    <br />
+                    <input type="text" list="states" class="form-control heavy-rain-gradient" placeholder="Enter School Location or Name" @bind-value="SearchQuery">
+                    <datalist id="states" style="display:none">
+                        @foreach (var s in states)
+                        {
+                            <option value="@s"></option>
+                        }
+                    </datalist>
+                </div>
+                <br />
+                <center>
+                <button type="button" class="btn blue-gradient waves-effect" style="color:white" @onclick="OnSearchButtonClick">
+                    Search
+                    </button>
+                </center>
+
+            </form>
+
+        </div>
+
+    </div>
+    <!--/.Card-->
+    <!-- Content -->
+
+</div>
+
+@for (int i = 0; i < 10; i++)
+{
+    <br />
+}
+
+
+<div class="container pt-5 my-5 z-depth-1 card heavy-rain-gradient" id="features">
+    <section class="p-md-3 mx-md-5 text-lg-left">
+        <div class="row d-flex justify-content-center">
+            <h2 class="font-weight-bold pb-4">Why Us?</h2>
+        </div>
+        <div class="row text-center d-flex justify-content-center mt-4">
+            <div class="col-lg-4 col-md-6 mb-5">
+                <i class="far fa-chart-bar indigo-text fa-3x mb-4"></i>
+                <h4 class="font-weight-bold mb-4">Feature 1</h4>
+                <p class="text-muted px-2 mb-lg-0">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <i class="fa fa-home pink-text fa-3x mb-4"></i>
+                <h4 class="font-weight-bold mb-4">Feature 2</h4>
+                <p class="text-muted px-2 mb-lg-0">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <i class="fa fa-plane blue-text fa-3x mb-4"></i>
+                <h4 class="font-weight-bold mb-4">Feature 3</h4>
+                <p class="text-muted px-2 mb-md-0">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+
+@code
+{
+    string[] states = new string[] { "Lucknow"
+};
+
+    private string SearchQuery { get; set; }
+
+    private void OnSearchButtonClick()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchQuery))
+            NavManager.NavigateTo("/hostelresult/" + SearchQuery);
+
+    }
+
+}
+
+<style>
+    body {
+        background-image: url('./images/blur.jpg');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: 0% 0%;
+    }
+</style>

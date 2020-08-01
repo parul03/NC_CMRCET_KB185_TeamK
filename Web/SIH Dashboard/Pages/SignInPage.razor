@@ -1,0 +1,125 @@
+﻿@page "/signin"
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<NavBar/>
+
+<div class="container my-5 px-0">
+
+    <!--Section: Content-->
+    <section class="p-5 my-md-5 text-center">
+        <form class="my-5 mx-md-5">
+
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <!-- Material form login -->
+                    <div class="card">
+
+                        <!--Card content-->
+                        <div class="card-body">
+
+                            <!-- Form -->
+                            <form class="text-center" style="color: #757575;">
+
+                                <h3 class="font-weight-bold my-4 pb-2 text-center dark-grey-text">Log In</h3>
+
+                                @if (ErrorMessage != null)
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        @ErrorMessage
+                                    </div>
+                                }
+
+                                <!-- Name -->
+                                <input type="email" id="defaultSubscriptionFormPassword" class="form-control mb-4" placeholder="Email" @bind-value="email">
+
+                                <!-- Email -->
+                                <input type="password" id="defaultSubscriptionFormEmail" class="form-control" placeholder="Password" @bind-value="password">
+                                <small id="passwordHelpBlock" class="form-text text-right blue-text">
+                                    <p style="color:dodgerblue;font-weight:bold;cursor:pointer" @onclick="ResetPassword">Recover Password</p>
+                                </small>
+
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-info my-4 btn-block blue-gradient  waves-effect" @onclick="LogIn">Log In</button>
+                                    <a href="/signup"><button class="btn purple-gradient white-text  waves-effect">Sign Up Instead</button></a>
+
+
+                                </div>
+
+                            </form>
+                            <!-- Form -->
+
+                        </div>
+
+                    </div>
+                    <!-- Material form login -->
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+    <!--Section: Content-->
+
+
+</div>
+
+<style>
+    body {
+        background-image: url('./images/blur.jpg');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+</style>
+
+
+@code
+{
+    string ErrorMessage { get; set; }
+    string email { get; set; } = "";
+    string password { get; set; } = "";
+    private async void LogIn()
+    {
+        var x = await JsRuntime.InvokeAsync<AuthResult>("signInUser", email, password);
+        if (!x.status)
+        {
+            ErrorMessage = x.message;
+            StateHasChanged();
+        }
+        else
+        {
+            GlobalUser.Email = email;
+            GlobalUser.UID = x.uid;
+            GlobalUser.IsVerified = x.emailVerified;
+            StateHasChanged();
+            if (x.emailVerified)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                await JsRuntime.InvokeAsync<AuthResult>("verifyEmail");
+                NavigationManager.NavigateTo("verifyaccount/" + email);
+            }
+        }
+    }
+    async void ResetPassword()
+    {
+        var x = await JsRuntime.InvokeAsync<AuthResult>("resetPassword", email);
+        if (!x.status)
+            ErrorMessage = x.message;
+
+        ErrorMessage = "An Reset email has been sent at:" + email;
+        StateHasChanged();
+    }
+
+    public class AuthResult
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public string uid { get; set; }
+        public bool emailVerified { get; set; }
+
+    }
+
+}
