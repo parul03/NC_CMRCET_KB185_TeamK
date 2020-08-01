@@ -17,19 +17,19 @@
         <h5>@user.Name</h5>
         <h6>@user.Role.ToString()</h6>
         <address>@user.Email</address>
-        <DataTable Searchable="true">
-            <TableHolder ColumnNames="TableOption">
-                @foreach (var feed in feeds)
-                {
-                    <TableItem>
-                        <TableValue>@feed.Date</TableValue>
-                        <TableValue>@feed.SchoolCode</TableValue>
-                        <TableValue>@schoolnames[feed.SchoolCode]</TableValue>
-                        <TableValue><a href="/feedback/@feed.Id">View Feedback</a></TableValue>
-                    </TableItem>
-                }
-            </TableHolder>
-        </DataTable>
+            <DataTable Searchable="true">
+                <TableHolder ColumnNames="TableOption">
+                    @foreach (var feed in feeds)
+                    {
+                        <TableItem>
+                            <TableValue>@feed.Date</TableValue>
+                            <TableValue>@feed.SchoolCode</TableValue>
+                            <TableValue>@schoolnames[feed.SchoolCode]</TableValue>
+                            <TableValue><a href="/feedback/@feed.Id">View Feedback</a></TableValue>
+                        </TableItem>
+                    }
+                </TableHolder>
+            </DataTable>
     </div>
 }
 else

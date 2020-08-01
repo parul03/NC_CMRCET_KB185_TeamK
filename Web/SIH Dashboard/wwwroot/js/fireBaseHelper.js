@@ -28,12 +28,12 @@ async function signUpUser(email, password) {
         {
             "status": true,
             "uid": res.user.uid,
-            "emailVerified": res.user.emailVerified
+            "emailVerified":res.user.emailVerified
         };
         return payload;
     }
     catch (err) {
-        let payload =
+        let payload=
         {
             "status": false,
             "message": err.toString()
@@ -127,17 +127,20 @@ function print(val) {
     console.log(val);
 }
 
-function WriteData(path, val) {
+function WriteData(path, val)
+{
     database.ref(path).set(val);
 }
 
 //Can now read List 
-async function ReadData(path) {
+async function ReadData(path)
+{
     const v = await database.ref(path).once('value');
     return v.val();
 }
 
-function PushData(path, val) {
+function PushData(path, val)
+{
     database.ref(path).push().set(val);
 }
 
@@ -176,14 +179,13 @@ async function GetFeedbacks(path, lmt) {
         var feed = await database.ref("Feedbacks/" + id).once('value').then(function (snapshot) {
             var feed = snapshot.val();
             feed.id = snapshot.key;
-            return feed;
-        });
+            return feed;});
         feeds.push(feed);
     }
     return feeds;
 }
 
-function UseCaptcha(btnid, Dotnet) {
+function UseCaptcha(btnid,Dotnet) {
     firebase.auth().languageCode = 'en';
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('otpbtn', {
         'size': 'invisible',
@@ -192,7 +194,7 @@ function UseCaptcha(btnid, Dotnet) {
             Dotnet.invokeMethodAsync("CPCLK", "__CaptchaCallBack__");
         }
     });
-
+            
     window.recaptchaVerifier.render().then(function (widgetId) {
         window.recaptchaWidgetId = widgetId;
     });
@@ -205,7 +207,8 @@ async function SignInPhone(phoneNumber) {
         window.confirmationResult = await firebase.auth().signInWithPhoneNumber("+91" + phoneNumber, appVerifier);
         return null;
     }
-    catch (e) {
+    catch(e)
+    {
         return e.message;
     }
 }
@@ -215,7 +218,7 @@ async function verifyOpt(otp) {
         console.log(otp);
         var confirmationResult = window.confirmationResult;
         var user = await confirmationResult.confirm(otp);
-        return null;
+            return null;
     }
     catch (e) {
         console.log(e.message);
