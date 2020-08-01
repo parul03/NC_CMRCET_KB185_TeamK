@@ -1,0 +1,69 @@
+﻿@page "/schools"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+<NavBar />
+<!-- Card Regular -->
+<br />
+<br />
+
+@if (GlobalUser.UID == null)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+@if (schools != null)
+{
+    <div class="container">
+        <h5>Schools</h5>
+        <DataTable Searchable="true">
+            <TableHolder ColumnNames="TableOption">
+                @foreach (var school in schools)
+                {
+                    <TableItem>
+                        <TableValue>@school.Id</TableValue>
+                        <TableValue>@school.Name</TableValue>
+                        <TableValue>@school.Address</TableValue>
+                        <TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>
+                    </TableItem>
+                }
+            </TableHolder>
+        </DataTable>
+    </div>
+}
+else
+{
+    @if (firstrender)
+    {
+        <br />
+        <p>Loading</p>
+    }
+    else
+    {
+        <br />
+        <p>Failed to fetch profile data</p>
+    }
+}
+
+@code {
+    private bool firstrender = true;
+    private string[] TableOption = new string[] { "Code", "Name", "Address", "Feedbacks" };
+    private List<Schools> schools = null;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            LoadSchools();
+        }
+        else
+        {
+            firstrender = false;
+        }
+    }
+    async void LoadSchools()
+    {
+        schools = await DatabaseHelper.ReadList<List<Schools>>(Runtime, "Schools/");
+        StateHasChanged();
+    }
+
+}

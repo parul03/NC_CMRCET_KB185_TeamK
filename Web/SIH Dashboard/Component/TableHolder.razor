@@ -1,20 +1,20 @@
 ﻿<div id="table" class="table-editable">
 
-    <table class="table table-bordered table-hover table-responsive text-center"
-           style="margin:auto;width:100%;table-layout:fixed">
-        <thead>
-            <tr>
-                @foreach (string s in ColumnNames)
-                {
-                    <th class="text-center font-weight-bolder">@(s.Replace("_"," "))</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @ChildContent
-        </tbody>
-    </table>
-</div>
+            <table class="table table-bordered table-hover table-responsive text-center"
+                   style="margin:auto;width:100%;table-layout:fixed">
+                <thead>
+                    <tr>
+                        @foreach (string s in ColumnNames)
+                        {
+                            <th class="text-center font-weight-bolder">@(s.Replace("_"," "))</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @ChildContent
+                </tbody>
+            </table>
+        </div>
 @code
 {
     [Parameter]
