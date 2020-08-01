@@ -30,10 +30,19 @@ namespace SIH_Dashboard
         {
             return await Runtime.InvokeAsync<T>("ReadData", path);
         }
-        private T QueryDatabase<T>(IJSRuntime runtime, string path, T type)
+        public async static void PushData<T>(IJSRuntime Runtime, string path, T data)
         {
-            return type;
+            await Runtime.InvokeVoidAsync("PushData", path, data);
         }
+        public async static Task<T> ReadList<T>(IJSRuntime Runtime, string path)
+        {
+            return await Runtime.InvokeAsync<T>("ReadList", path);
+        }
+        public async static Task<T> GetFeedbacks<T>(IJSRuntime Runtime, string path, int lmt = 0)
+        {
+            return await Runtime.InvokeAsync<T>("GetFeedbacks", path, lmt);
+        }
+
 
     }
 }

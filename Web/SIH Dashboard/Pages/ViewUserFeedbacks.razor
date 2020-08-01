@@ -1,0 +1,155 @@
+﻿@page "/user/feedbacks"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+<NavBar />
+<!-- Card Regular -->
+<br />
+<br />
+
+@if (GlobalUser.UID == null)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+@if (feeds != null)
+{
+    <div class="container">
+        <h5>@user.Name</h5>
+        <h6>@user.Role.ToString()</h6>
+        <address>@user.Email</address>
+        <DataTable Searchable="true">
+            <TableHolder ColumnNames="TableOption">
+                @foreach (var feed in feeds)
+                {
+                    <TableItem>
+                        <TableValue>@feed.Date</TableValue>
+                        <TableValue>@feed.SchoolCode</TableValue>
+                        <TableValue>@schoolnames[feed.SchoolCode]</TableValue>
+                        <TableValue><a href="/feedback/@feed.Id">View Feedback</a></TableValue>
+                    </TableItem>
+                }
+            </TableHolder>
+        </DataTable>
+    </div>
+}
+else
+{
+    @if (firstrender)
+    {
+        <br />
+        <p>Loading</p>
+    }
+    else
+    {
+        <br />
+        <p>Failed to fetch profile data</p>
+    }
+}
+
+@code
+{
+    private bool firstrender = true;
+    private string[] TableOption = new string[] { "Date", "School Code", "School Name", "Feedback" };
+    private List<Feedbacks> feeds = null;
+    private UserData user = null;
+    private IDictionary<int, string> schoolnames = new Dictionary<int, string>();
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            LoadFeed();
+        }
+        else
+        {
+            firstrender = false;
+        }
+    }
+    async void LoadFeed()
+    {
+        feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "user_feedbacks/" + GlobalUser.UID);
+        user = await DatabaseHelper.ReadData<UserData>(Runtime, "Users/" + GlobalUser.UID);
+        foreach (var feed in feeds)
+        {
+            schoolnames.Add(feed.SchoolCode, await DatabaseHelper.ReadData<string>(Runtime, "Schools/" + feed.SchoolCode + "/name"));
+        }
+        StateHasChanged();
+    }
+}@page "/user/feedbacks"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+<NavBar />
+<!-- Card Regular -->
+<br />
+<br />
+
+@if (GlobalUser.UID == null)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+@if (feeds != null)
+{
+    <div class="container">
+        <h5>@user.Name</h5>
+        <h6>@user.Role.ToString()</h6>
+        <address>@user.Email</address>
+        <DataTable Searchable="true">
+            <TableHolder ColumnNames="TableOption">
+                @foreach (var feed in feeds)
+                {
+                    <TableItem>
+                        <TableValue>@feed.Date</TableValue>
+                        <TableValue>@feed.SchoolCode</TableValue>
+                        <TableValue>@schoolnames[feed.SchoolCode]</TableValue>
+                        <TableValue><a href="/feedback/@feed.Id">View Feedback</a></TableValue>
+                    </TableItem>
+                }
+            </TableHolder>
+        </DataTable>
+    </div>
+}
+else
+{
+    @if (firstrender)
+    {
+        <br />
+        <p>Loading</p>
+    }
+    else
+    {
+        <br />
+        <p>Failed to fetch profile data</p>
+    }
+}
+
+@code
+{
+    private bool firstrender = true;
+    private string[] TableOption = new string[] { "Date", "School Code", "School Name", "Feedback" };
+    private List<Feedbacks> feeds = null;
+    private UserData user = null;
+    private IDictionary<int, string> schoolnames = new Dictionary<int, string>();
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            LoadFeed();
+        }
+        else
+        {
+            firstrender = false;
+        }
+    }
+    async void LoadFeed()
+    {
+        feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "user_feedbacks/" + GlobalUser.UID);
+        user = await DatabaseHelper.ReadData<UserData>(Runtime, "Users/" + GlobalUser.UID);
+        foreach (var feed in feeds)
+        {
+            schoolnames.Add(feed.SchoolCode, await DatabaseHelper.ReadData<string>(Runtime, "Schools/" + feed.SchoolCode + "/name"));
+        }
+        StateHasChanged();
+    }
+}
