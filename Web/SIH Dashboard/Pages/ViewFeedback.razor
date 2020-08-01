@@ -1,0 +1,103 @@
+﻿@page "/feedback/{Id}"
+@inject IJSRuntime Runtime
+<NavBar />
+@if (feed != null)
+{
+<div class="container my-5 pt-5 pb-3 px-4 z-depth-1" id="main">
+    <div class="d-flex justify-content-between">
+        <small class="black-text">Date: @feed.Date</small>
+        <small class="black-text">School: <a href="school/@feed.SchoolCode">@schoolname</a></small>
+        <small class="black-text">Submitted by: @username</small>
+    </div>
+    <br />
+    <br />
+    @for (int i = 0; i < scores.Count; i++)
+    {
+        <div class="d-flex justify-content-between">
+            <small class="black-text">@questions[i]</small>
+            <small class="black-text"><span><strong>@scores[i]</strong></span>/<span></span>10</small>
+        </div>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: @(scores[i]*10)%" aria-valuenow="@scores[i]" aria-valuemin="0" aria-valuemax="10"></div>
+        </div>
+        <br>
+    }
+    <br />
+    @if (feed.Notes != null)
+    {
+        <small class="black-text">Additional Notes: @feed.Notes</small>
+        <br />
+        <small class="black-text">Sentiment Score: @senti</small>
+    }
+    <br />
+    <small class="black-text">Images Submitted: </small>
+    <br/>
+    @foreach (string i in images)
+    {
+        <a href="@i" data-lightbox="feedimages">
+            <img src="@i" class="img-rounded img-thumbnail" width="150" height="150" style="padding:10px">
+        </a>
+    }
+</div>
+}
+else
+{
+    <p class="black-text">Loading</p>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private List<string> questions = null;
+    private List<int> scores = new List<int>();
+    private List<string> images = null;
+    private Feedbacks feed = null;
+    private string username = null;
+    private string schoolname = null;
+    private string senti = null;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            LoadVars();
+        }
+    }
+    async void LoadVars()
+    {
+        questions = await DatabaseHelper.ReadList<List<string>>(Runtime, "Questions/");
+        feed = await DatabaseHelper.ReadData<Feedbacks>(Runtime, "Feedbacks/" + Id);
+        images = await DatabaseHelper.ReadList<List<string>>(Runtime, "Feedbacks/" + Id + "/images/");
+        feed.Id = Id;
+        username = await DatabaseHelper.ReadData<string>(Runtime, "Users/" + feed.SubmitterId + "/name");
+        schoolname = await DatabaseHelper.ReadData<string>(Runtime, "Schools/" + feed.SchoolCode + "/name");
+        //senti = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
+        foreach (char c in feed.Feedback)
+        {
+            if ( c == 't' || c == 'f')
+            {
+                scores.Add((c == 't') ? 10 : 0);
+            }
+            else if (c != '0')
+            {
+                scores.Add((int)(c - '0'));
+            }
+            else
+            {
+                scores.Add(10);
+            }
+        }
+        StateHasChanged();
+    }
+}
+
+<style>
+    #main {
+        background-color: #f5f8fd;
+        border-radius: 20px;
+    }
+    .progress-bar{
+        border-radius: 15px;
+    }
+</style>
