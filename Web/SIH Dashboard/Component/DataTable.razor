@@ -12,17 +12,18 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
-private string id { get; set; } = "DataTable-" + Guid.NewGuid().ToString();
+    private string id { get; set; } = "DataTable-" + Guid.NewGuid().ToString();
 
 
-protected override void OnParametersSet()
-{
-    StateHasChanged();
-    base.OnParametersSet();
-}
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+        base.OnParametersSet();
+    }
 
-protected async override Task OnAfterRenderAsync(bool firstRender)
-{
-    await JSRuntime.InvokeAsync<string>("AddDataTable", new object[] { "#" + id + " table", Searchable });
-    await base.OnAfterRenderAsync(firstRender);
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeAsync<string>("AddDataTable", new object[] { "#" + id + " table", Searchable });
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }
