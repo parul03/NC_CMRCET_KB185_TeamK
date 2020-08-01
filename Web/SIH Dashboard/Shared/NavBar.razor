@@ -1,10 +1,10 @@
 ﻿@inject IJSRuntime Runtime
 @inject NavigationManager NavManager
 
-<nav class="navbar navbar-expand-lg navbar-dark black">
+<nav class="navbar navbar-expand-lg navbar-dark light">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="#">SIH Dashboard</a>
+    <a class="navbar-brand" href="#" id="nbrand">SIH Dashboard</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -18,21 +18,21 @@
         <!-- Links -->
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="#" id="nlink">
                     Home
                     <!--span class="sr-only">(current)</!--span-->
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+            @* <li class="nav-item">
+                <a class="nav-link" href="#" id="nlink">Features</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
+                <a class="nav-link" href="#" id="nlink">Pricing</a>
+            </li> *@
         </ul>
         @if (GlobalUser.UID == null)
         {
-            <a class="nav-link navbar-right" href="/signin" style="margin-left:-10px">Login</a>
+            <a class="btn btn-info navbar-right" href="/signin" style="margin-left:-10px" >Login</a>
         }
         //else if (!GlobalUser.IsVerified && NavManager.Uri.IndexOf("/verifyaccount/") < 0)
         //{
@@ -40,7 +40,7 @@
         //}
         else
         {
-            <a class="nav-link navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
+            <a class="btn btn-info navbar-right" href="/userinfo" style="margin-left:-10px">@GlobalUser.Email</a>
             <button type="button" class="btn blue-gradient waves-effect" @onclick="Logout">Log Out</button>
         }
 
@@ -68,5 +68,22 @@
         box-shadow: none;
         font-size: 2rem;
         font-family: 'Dosis', sans-serif;
+    }
+    #nbrand{
+	color: white;
+	font-size: 25px;
+	background-color: #00bbd7;
+	padding: 10px;
+	border-radius: 40px;
+
+    }
+    #nlink{
+        color: black;
+        font-weight:bolder ;
+    }
+
+    .btn{
+        background-color: #00bbd7;
+        font-size: 18px;
     }
 </style>
