@@ -1,0 +1,20 @@
+﻿@if (Editable)
+{
+    <td class="pt-3-half @Color" contenteditable="true" @onclick="OnClick">@ChildContent</td>
+}
+else
+{
+    <td class="pt-3-half @Color" @onclick="OnClick">@ChildContent</td>
+}
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public bool Editable { get; set; } = false;
+    [Parameter]
+    public string Color { get; set; } = "white-text";
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+
+}
