@@ -1,0 +1,173 @@
+﻿@page "/problems"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+
+<NavBar />
+
+@if (GlobalUser.UID == null)
+    {
+        NavManager.NavigateTo("/signin");
+
+    }
+    else
+    {
+
+    }
+
+@if (schoolCOde == null)
+{
+    <div class="flex-center">
+        <input type="number" @bind-value="schoolCOde" placeholder="Enter School Code" />
+        <button class="btn btn-primary" @onclick="()=> { StateHasChanged(); }">Enter</button>
+
+    </div>
+}
+else
+{
+    if (choice == -1)
+    {
+        <!-- #intro -->
+
+        <main id="main">
+
+
+
+
+            <!--==========================
+              Services Section
+            ============================-->
+            <section id="services" class="section-bg">
+                <div class="container">
+                    <div class="row">
+
+                        @*@if (GlobalUser.Role != Roles.Admin)
+                            {*@
+                        <div @onclick="@newSelect" class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+                            <div class="box">
+                                <div class="icon" style="background: #e6fdfc;"><i class="ion-ios-paper-outline" style="color: #3fcdc7;"></i></div>
+                                <h4 class="title">New Issue</h4>
+                                <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
+                            </div>
+                        </div>
+                        @*}*@
+                        <div @onclick="viewSelect" class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+                            <div class="box">
+                                <div class="icon" style="background: #e6fdfc;"><i class="ion-ios-paper-outline" style="color: #3fcdc7;"></i></div>
+                                <h4 class="title">View Issues</h4>
+                                <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section><!-- #services -->
+        </main>
+
+
+
+    }
+    else if (choice == 0)
+    {
+        <input type="text" @bind-value="title" placeholder="Enter Topic" />
+        <br />
+        <textarea type="text" @bind="problemDesc">Description</textarea>
+        <br />
+        <button class="btn btn-primary" @onclick="CreateIssue">Create</button>
+        if(error!=null)
+        {
+            <div class="alert-danger">@error</div>
+        }
+    }
+    else
+    {
+        if (problemsList == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <br />
+            <MyTableHolder HeaderColor="white" ColumnNames="colms">
+                @foreach (var problem in problemsList)
+                {
+                <MyTableItem>
+                    <MyTableValue Color="white">@schoolCOde</MyTableValue>
+                    <MyTableValue Color="white">@problem.Title</MyTableValue>
+                    <MyTableValue Color="white">@problem.CreatedDate</MyTableValue>
+                    <MyTableValue Color="white">
+                        
+                        <IssueViewer SchoolCode="@schoolCOde" Statement="problem" DataChanged="ReadAllSchoolIssues">
+                        </IssueViewer>
+                    </MyTableValue>
+                </MyTableItem>
+                }
+            </MyTableHolder>
+        }
+    }
+}
+
+@code
+{
+    string[] colms = new string[] {"School Code","Problem","Created Date","View Status" };
+
+    string uid;
+    string problemDesc = "poor fcilities";
+    string title = "bad school";
+    string schoolCOde = null;
+    Roles role;
+    int choice = -1;
+    List<SchoolProblem> problemsList;
+    string error = null;
+    async void CreateIssue()
+    {
+        var mod = await TextModerator.GetModerationResult(title+"\t"+problemDesc);
+        if (!mod.Classification.ReviewRecommended)
+        {
+            SchoolProblem problemStatement = new SchoolProblem();
+            problemStatement.Description = problemDesc;
+            problemStatement.Title = title;
+            problemStatement.CreatedDate = DateTime.Now;
+            problemStatement.Uid = GlobalUser.UID;
+
+            DatabaseHelper.PushData<SchoolProblem>(Runtime, "SchoolIssues/" + schoolCOde, problemStatement);
+            choice = 1;
+            ReadAllSchoolIssues();
+        }
+        else
+        {
+            error = "AI flagged your content obscene or , vulgar direct targetted please contact admin in case of any technical issue";
+        }
+        StateHasChanged();
+    }
+    void newSelect()
+    {
+        choice = 0;
+        StateHasChanged();
+    }
+    void viewSelect()
+    {
+        choice = 1;
+        ReadAllSchoolIssues();
+        StateHasChanged();
+    }
+
+    async void ReadAllSchoolIssues()
+    {
+        if (schoolCOde == null)
+            return;
+
+        problemsList= await DatabaseHelper.ReadList<List<SchoolProblem>>(Runtime, "SchoolIssues/" + schoolCOde);
+        problemsList=problemsList.OrderByDescending(x => x.CreatedDate).ToList();
+        StateHasChanged();
+    }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ReadAllSchoolIssues();
+    }
+    bool Valid()
+    {
+        return false;
+    }
+}
