@@ -1,12 +1,12 @@
 ﻿var firebaseConfig = {
-    apiKey: "AIzaSyDcsQ666_CZBapqloYGFgCxqClyICv8V-c",
-    authDomain: "hostel-hub-42ccb.firebaseapp.com",
-    databaseURL: "https://hostel-hub-42ccb.firebaseio.com",
-    projectId: "hostel-hub-42ccb",
-    storageBucket: "hostel-hub-42ccb.appspot.com",
-    messagingSenderId: "794049151568",
-    appId: "1:794049151568:web:0a80943829803b27df4755",
-    measurementId: "G-4KZBWTVE15"
+    apiKey: "AIzaSyDo48RL0DQtlrq8uOp-X-BBBqJRcYRUJDg",
+    authDomain: "trans-setup-257313.firebaseapp.com",
+    databaseURL: "https://trans-setup-257313.firebaseio.com",
+    projectId: "trans-setup-257313",
+    storageBucket: "trans-setup-257313.appspot.com",
+    messagingSenderId: "199528645527",
+    appId: "1:199528645527:web:2f53a1b9eaeca0bfc3bad2",
+    measurementId: "G-HC050E3EZC"
 };
 
 
@@ -132,7 +132,96 @@ function WriteData(path, val)
     database.ref(path).set(val);
 }
 
+//Can now read List 
 async function ReadData(path)
 {
-    return await database.ref(path).once('value');
+    const v = await database.ref(path).once('value');
+    return v.val();
+}
+
+function PushData(path, val)
+{
+    database.ref(path).push().set(val);
+}
+
+//Returns list of objects to be used in conjuction with ReadList() wrapper
+async function ReadList(path) {
+    return await database.ref(path).once('value').then(function (snapshot) {
+        var lst = [];
+        snapshot.forEach(function (childSnapshot) {
+            var obj = childSnapshot.val();
+            obj.id = childSnapshot.key;
+            lst.push(obj);
+        });
+        return lst;
+    });
+}
+
+async function GetIds(path, lmt) {
+    var dbref = database.ref(path);
+    if (lmt != 0) {
+        var dbref = dbref.limitToLast(lmt);
+    }
+    return await dbref.once('value').then(function (snapshot) {
+        var ids = [];
+        snapshot.forEach(function (childSnapshot) {
+            var obj = childSnapshot.key;
+            ids.push(obj);
+        });
+        return ids;
+    });
+}
+
+async function GetFeedbacks(path, lmt) {
+    var ids = await GetIds(path, lmt);
+    var feeds = [];
+    for (const id of ids) {
+        var feed = await database.ref("Feedbacks/" + id).once('value').then(function (snapshot) {
+            var feed = snapshot.val();
+            feed.id = snapshot.key;
+            return feed;});
+        feeds.push(feed);
+    }
+    return feeds;
+}
+
+function UseCaptcha(btnid,Dotnet) {
+    firebase.auth().languageCode = 'en';
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('otpbtn', {
+        'size': 'invisible',
+        'callback': function (response) {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            Dotnet.invokeMethodAsync("CPCLK", "__CaptchaCallBack__");
+        }
+    });
+            
+    window.recaptchaVerifier.render().then(function (widgetId) {
+        window.recaptchaWidgetId = widgetId;
+    });
+}
+
+
+async function SignInPhone(phoneNumber) {
+    try {
+        var appVerifier = window.recaptchaVerifier;
+        window.confirmationResult = await firebase.auth().signInWithPhoneNumber("+91" + phoneNumber, appVerifier);
+        return null;
+    }
+    catch(e)
+    {
+        return e.message;
+    }
+}
+
+async function verifyOpt(otp) {
+    try {
+        console.log(otp);
+        var confirmationResult = window.confirmationResult;
+        var user = await confirmationResult.confirm(otp);
+            return null;
+    }
+    catch (e) {
+        console.log(e.message);
+        return e.message;
+    }
 }
