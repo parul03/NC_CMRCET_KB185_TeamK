@@ -22,7 +22,7 @@ namespace SIH_Dashboard
         /// <param name="Runtime"></param>
         /// <param name="path">path follewed by / from root ref </param>
         /// <param name="data"></param>
-        public async static void  WriteData<T>(IJSRuntime Runtime,string path,T data)
+        public async static void WriteData<T>(IJSRuntime Runtime, string path, T data)
         {
             await Runtime.InvokeVoidAsync("WriteData", path, data);
         }
@@ -30,6 +30,10 @@ namespace SIH_Dashboard
         {
             return await Runtime.InvokeAsync<T>("ReadData", path);
         }
-        
+        private T QueryDatabase<T>(IJSRuntime runtime, string path, T type)
+        {
+            return type;
+        }
+
     }
 }
