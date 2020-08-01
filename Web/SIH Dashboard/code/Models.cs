@@ -12,9 +12,11 @@ namespace SIH_Dashboard
         public static string UID { get; set; }
         public static bool IsVerified { get; set; }
         public static string Email { get; set; }
+        public static Roles Role { get; set; }
     }
     public class UserData
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public long Phone { get; set; }
         public Roles Role { get; set; }
@@ -26,7 +28,7 @@ namespace SIH_Dashboard
 
     public enum Roles
     {
-        Admin, VisitingOfficial, Teacher, Student
+        Admin, VisitingOfficial, Teacher, Student, Parent
     }
 
     public class Schools
