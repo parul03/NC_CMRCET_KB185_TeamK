@@ -72,7 +72,7 @@ else
         feed.Id = Id;
         username = await DatabaseHelper.ReadData<string>(Runtime, "Users/" + feed.SubmitterId + "/name");
         schoolname = await DatabaseHelper.ReadData<string>(Runtime, "Schools/" + feed.SchoolCode + "/name");
-        senti = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
+        //senti = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
         foreach (char c in feed.Feedback)
         {
             if ( c == 't' || c == 'f')
