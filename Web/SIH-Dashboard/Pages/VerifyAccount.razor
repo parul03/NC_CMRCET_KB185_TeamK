@@ -1,0 +1,49 @@
+﻿@page "/verifyaccount/{text}"
+@inject IJSRuntime Runtime
+
+
+<NavBar />
+
+<div class="card align-items-center flex-center">
+
+    <!-- Card image -->
+    <!-- Card content -->
+    <div class="card-body">
+
+        <!-- Title -->
+        <h4 class="card-title"><a>Verify your email</a></h4>
+        <!-- Text -->
+        <p class="card-text">
+            Email has been sent to <span style="color:dodgerblue"><b>@Text</b></span> kindly verify your email
+        </p>
+        <!-- Button -->
+        <button @onclick="VerifyEmail" class="btn btn-primary">Resend email</button>
+        @if (error != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @(error)
+            </div>
+        }
+    </div>
+
+</div>
+
+@code
+{
+    [Parameter]
+    public string Text { get; set; }
+    private string error { get; set; }
+    private async void VerifyEmail()
+    {
+        await Runtime.InvokeAsync<SignInPage.AuthResult>("verifyEmail");
+    }
+}
+
+<style>
+    body {
+        background-image: url('./images/blur.jpg');
+        background-repeat: no-repeat;
+        background-size: 100% 100vh;
+        background-position: 0% 0%;
+    }
+</style>
