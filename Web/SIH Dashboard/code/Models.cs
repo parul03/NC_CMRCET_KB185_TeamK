@@ -35,6 +35,7 @@ namespace SIH_Dashboard
         public string Address { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string District { get; set; }
     }
 
     public class Feedbacks
@@ -98,6 +99,29 @@ namespace SIH_Dashboard
     public class VistorDummy
     {
         public bool verified { get; set; }
+    }
+
+    public class Problem
+    {
+        public Roles UploaderRole { get; set; }
+        public string Uid { get; set; }
+        public string Title { get; set; }
+        public string ProblemStatement { get; set; }
+        public bool IsClosedStatus { get; set; }
+        public DateTime CloseDateTime { get; set; }
+        public string CloseStudent { get; set; }
+        public bool IsAnonymous { get; set; }
+    }
+
+    public class SchoolProblem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Uid { get; set; }
+        public int OpenStatus { get; set; } = 1;
+        public DateTime CreatedDate { get; set; }
+        public DateTime CloseDate { get; set; }
+        public bool isAnonymous { get; set; }
     }
 
 }
