@@ -36,18 +36,21 @@
                 <p class="black-text">Status : @Statement.OpenStatus</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
-                @if (Statement.Uid == GlobalUser.UID)
+                @if (Statement.Uid == GlobalUser.UID && Statement.OpenStatus == 1)
                 {
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" @onclick="Upload">Close Issue</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @onclick="Upload">Issue Solved</button>
                 }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+
             </div>
         </div>
     </div>
 </div>
 
-@code {
+@code
+{
+
     [Parameter]
     public SchoolProblem Statement { get; set; }
     [Parameter]
