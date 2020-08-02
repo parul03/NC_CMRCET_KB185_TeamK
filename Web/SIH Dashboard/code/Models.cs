@@ -37,6 +37,7 @@ namespace SIH_Dashboard
         public double Longitude { get; set; }
         public string District { get; set; }
         public CategoryScores CategoryScores { get; set; }
+        public CategoryScores CategoryScoresStudent { get; set; }
     }
     public class CategoryScores
     {
