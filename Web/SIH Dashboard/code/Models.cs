@@ -36,6 +36,17 @@ namespace SIH_Dashboard
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string District { get; set; }
+        public CategoryScores CategoryScores { get; set; }
+    }
+    public class CategoryScores
+    {
+        public int Safety { get; set; }
+        public int Academics { get; set; }
+        public int Health { get; set; }
+        public int Discipline { get; set; }
+        public int Meals { get; set; }
+        public int Activities { get; set; }
+        public int All { get; set; }
     }
 
     public class Feedbacks

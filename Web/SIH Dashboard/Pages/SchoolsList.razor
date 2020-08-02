@@ -32,6 +32,13 @@
                             <TableValue>@school.Id</TableValue>
                             <TableValue>@school.Name</TableValue>
                             <TableValue>@school.Address</TableValue>
+                            <TableValue>@school.CategoryScores.Safety</TableValue>
+                            <TableValue>@school.CategoryScores.Academics</TableValue>
+                            <TableValue>@school.CategoryScores.Health</TableValue>
+                            <TableValue>@school.CategoryScores.Discipline</TableValue>
+                            <TableValue>@school.CategoryScores.Meals</TableValue>
+                            <TableValue>@school.CategoryScores.Activities</TableValue>
+                            <TableValue>@school.CategoryScores.All</TableValue>
                             <TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>
                         </TableItem>
                     }
@@ -65,7 +72,7 @@ else
     private bool firstrender = true;
     private string districtselected { get; set; } = null;
     private List<string> districtoptions = null;
-    private string[] TableOption = new string[] { "Code", "Name", "Address", "Feedbacks" };
+    private string[] TableOption = new string[] { "Code", "Name", "Address","Safety", "Academics", "Health", "Discipline", "Meals", "Activities", "All", "Feedbacks" };
     private List<Schools> schools = null;
     protected override void OnAfterRender(bool firstRender)
     {
