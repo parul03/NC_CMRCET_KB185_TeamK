@@ -1,6 +1,6 @@
 ﻿function DisplayColumnChart(id, lab, labs, dat) {
     document.getElementById("graph-container").innerHTML = '&nbsp;';
-    document.getElementById("graph-container").innerHTML = '<canvas id="' + id +'" style="max-width: 7500px;"></canvas>';
+    document.getElementById("graph-container").innerHTML = '<canvas id="' + id +'" style="max-width: 1000px;"></canvas>';
     var ctx = document.getElementById(id).getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -50,7 +50,7 @@
 }
 function DisplayLineChart(id, dates, cat1, cat2, cat3, sent) {
     document.getElementById("graph-container").innerHTML = '&nbsp;';
-    document.getElementById("graph-container").innerHTML = '<canvas id="' + id + '" style="max-width: 750px;"></canvas>';
+    document.getElementById("graph-container").innerHTML = '<canvas id="' + id + '" style="max-width: 1000px;"></canvas>';
     var ctxL = document.getElementById(id).getContext('2d');
     var myLineChart = new Chart(ctxL, {
         type: 'line',
