@@ -4,22 +4,28 @@
 
 <NavBar/>
 
-<div class="container my-5 px-0">
+ 
+
+<div class="container my-5 px-0" >
 
     <!--Section: Content-->
-    <section class="p-5 my-md-5 text-center">
-        <form class="my-5 mx-md-5">
+    <section class="p-5 my-md-5 text-center"  id="logcontainer">
+        <!--form action="" class="my-5 mx-md-5"-->
 
             <div class="row">
+                 <div class="col-md-6 mx-auto" id="coljumbo">
+                    <div class="jumbotron" id="signinjumbo"></div>
+                </div>
+                
                 <div class="col-md-6 mx-auto">
                     <!-- Material form login -->
-                    <div class="card">
+                    <div class="card" id="signincard">
 
                         <!--Card content-->
                         <div class="card-body">
 
                             <!-- Form -->
-                            <form class="text-center" style="color: #757575;">
+                            <!--form class="text-center" style="color: #757575;"-->
 
                                 <h3 class="font-weight-bold my-4 pb-2 text-center dark-grey-text">Log In</h3>
 
@@ -36,17 +42,18 @@
                                 <!-- Email -->
                                 <input type="password" id="defaultSubscriptionFormEmail" class="form-control" placeholder="Password" @bind-value="password">
                                 <small id="passwordHelpBlock" class="form-text text-right blue-text">
-                                    <p style="color:dodgerblue;font-weight:bold;cursor:pointer" @onclick="ResetPassword">Recover Password</p>
+                                    <p style="padding-top: 22px; color:black;font-weight:bold;cursor:pointer;font-size:115%;" @onclick="ResetPassword">Recover Password</p>
                                 </small>
 
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-info my-4 btn-block blue-gradient  waves-effect" @onclick="LogIn">Log In</button>
-                                    <a href="/signup"><button class="btn purple-gradient white-text  waves-effect">Sign Up Instead</button></a>
+                                    <button type="submit" class="btn btn-info my-4 btn-block blue-gradient  waves-effect" @onclick="LogIn">Log In</button>
+                                    <button class="btn purple-gradient white-text  waves-effect" @onclick="SignUPClick">Sign Up Instead</button>
+                                    <button class="btn purple-gradient white-text  waves-effect" @onclick="SignMobileClick">Login Phone Number (Visitor)</button>
 
 
                                 </div>
 
-                            </form>
+                            <!--form-->
                             <!-- Form -->
 
                         </div>
@@ -56,19 +63,14 @@
                 </div>
             </div>
 
-        </form>
 
     </section>
     <!--Section: Content-->
-
-
 </div>
 
 <style>
-    body {
-        background-image: url('./images/blur.jpg');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
+    .form-control{
+        border-radius: 30px;
     }
 </style>
 
@@ -78,7 +80,7 @@
     string ErrorMessage { get; set; }
     string email { get; set; } = "";
     string password { get; set; } = "";
-    private async void LogIn()
+    private async Task LogIn()
     {
         var x = await JsRuntime.InvokeAsync<AuthResult>("signInUser", email, password);
         if (!x.status)
@@ -91,6 +93,7 @@
             GlobalUser.Email = email;
             GlobalUser.UID = x.uid;
             GlobalUser.IsVerified = x.emailVerified;
+            GlobalUser.Role = await JsRuntime.InvokeAsync<Roles>("ReadData", "Users/" + GlobalUser.UID + "/role");
             StateHasChanged();
             if (x.emailVerified)
             {
@@ -120,6 +123,15 @@
         public string uid { get; set; }
         public bool emailVerified { get; set; }
 
+    }
+
+    private void SignUPClick()
+    {
+        NavigationManager.NavigateTo("/signup");
+    }
+    private void SignMobileClick()
+    {
+        NavigationManager.NavigateTo("/mobilelogin");
     }
 
 }

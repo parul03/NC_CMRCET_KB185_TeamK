@@ -4,7 +4,7 @@
 
 @using System.Text.RegularExpressions
 
-<NavBar />
+<NavBar/>
 
 <div class="container my-5 py-5 z-depth-1 card">
 
@@ -22,64 +22,65 @@
                 <!-- Default form register -->
                 <!--form class="text-center" action="#!"-->
 
-                <p class="h4 mb-4">Sign up</p>
+                    <p class="h4 mb-4">Sign up</p>
 
-                @if (ErrorMessage != null)
-                {
-                    <div class="alert alert-danger" role="alert">
-                        @ErrorMessage
+                    @if (ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ErrorMessage
+                        </div>
+                    }
+
+
+                    <div class="form-row mb-4">
+                        <div class="col">
+                            <!-- name -->
+                            <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="Full name" @bind="Name">
+                        </div>
+                        <div class="col">
+                            <!-- Last name -->
+                            <input type="text" list="states" class="form-control heavy-rain-gradient" placeholder="Role" @bind-value="Role">
+                            <datalist id="states" style="display:none">
+                                @foreach (var s in Enum.GetNames(typeof(Roles)))
+                                {
+                                    <option value="@s"></option>
+
+                                }
+                            </datalist>
+                        </div>
                     </div>
-                }
+
+                    <!-- E-mail -->
+                    <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail" @bind="email">
+
+                    <!-- Password -->
+                    <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password"
+                           aria-describedby="defaultRegisterFormPasswordHelpBlock" @bind="password">
+                    <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                        At least 8 characters and 1 digit
+                    </small>
+
+                    <!-- Phone number -->
+                    <input type="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number"  @bind="phoneNumber"
+                           aria-describedby="defaultRegisterFormPhoneHelpBlock">
+                    <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+                        Optional - for two step authentication
+                    </small>
 
 
-                <div class="form-row mb-4">
-                    <div class="col">
-                        <!-- name -->
-                        <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="Full name" @bind="Name">
-                    </div>
-                    <div class="col">
-                        <input type="text" list="states" class="form-control heavy-rain-gradient" placeholder="Role" @bind-value="Role">
-                        <datalist id="states" style="display:none">
-                            @foreach (var s in Enum.GetNames(typeof(Roles)))
-                            {
-                                <option value="@s"></option>
+                    <!-- Sign up button -->
+                    <button type="submit"  class="btn btn-info my-4 btn-block blue-gradient waves-effect" tabindex="0" @onclick="SignUp">Sign Up</button>
+                    <button @onclick="SigninClick" class="btn purple-gradient white-text  waves-effect" >Login Instead</button>
 
-                            }
-                        </datalist>
-                    </div>
-                </div>
+                    <hr>
 
-                <!-- E-mail -->
-                <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail" @bind="email">
-
-                <!-- Password -->
-                <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password"
-                       aria-describedby="defaultRegisterFormPasswordHelpBlock" @bind="password">
-                <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
-                    At least 8 characters and 1 digit
-                </small>
-
-                <!-- Phone number -->
-                <input type="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number" @bind="phoneNumber"
-                       aria-describedby="defaultRegisterFormPhoneHelpBlock">
-                <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
-                    Optional - for two step authentication
-                </small>
-
-
-                <!-- Sign up button -->
-                <button type="submit" class="btn btn-info my-4 btn-block blue-gradient waves-effect" tabindex="0" @onclick="SignUp">Sign Up</button>
-                <button @onclick="SigninClick" class="btn purple-gradient white-text  waves-effect">Login Instead</button>
-
-                <hr>
-
-                <!-- Terms of service -->
-                <p>
-                    By clicking
-                    <em>Sign up</em> you agree to our
-                    <a href="" target="_blank">terms of service</a>
-                </p>
-                <br />
+                    <!-- Terms of service -->
+                    <p>
+                        By clicking
+                        <em>Sign up</em> you agree to our
+                        <a href="" target="_blank">terms of service</a>
+                    </p>
+                    <br />
 
 
 
@@ -98,14 +99,6 @@
 
 
 </div>
-
-<style>
-    body {
-        background-image: url('./images/blur.jpg');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-    }
-</style>
 
 @code
 {
@@ -160,7 +153,7 @@
             ErrorMessage = "Name too short.";
             return false;
         }
-        else if (Role.Length <= 0 || Enum.GetNames(typeof(Roles)).ToList().IndexOf(Role) < 0)
+        else if(Role.Length<=0 || Enum.GetNames(typeof(Roles)).ToList().IndexOf(Role)<0)
         {
             ErrorMessage = "Role Selected is not valid.";
             return false;
@@ -177,7 +170,7 @@
     }
     public static bool IsValidEmail(string email)
     {
-        return Regex.IsMatch(email, @"\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z", RegexOptions.IgnoreCase)
+        return Regex.IsMatch(email, @"\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z",RegexOptions.IgnoreCase)
             && Regex.IsMatch(email, @"^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*");
     }
 
@@ -187,9 +180,10 @@
         {
             Email = email,
             Name = Name,
-            Role = (Roles)Enum.Parse(typeof(Roles), Role, true),
+            Role = (Roles)Enum.Parse(typeof(Roles),Role,true),
             Phone = long.Parse(phoneNumber)
         });
+        GlobalUser.Role = (Roles)Enum.Parse(typeof(Roles),Role,true);
     }
     private void SigninClick()
     {
