@@ -13,8 +13,8 @@
 }
 @if (schools != null)
 {
-    <div class="container">
-        <h5>Schools</h5>
+    <div class="container" id="schoolcontainer">
+        <h5 id="schoolh5">Schools</h5>
         <DataTable Searchable="true">
             <TableHolder ColumnNames="TableOption">
                 @foreach (var school in schools)

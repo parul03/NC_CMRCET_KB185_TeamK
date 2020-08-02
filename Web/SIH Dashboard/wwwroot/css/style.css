@@ -1700,3 +1700,25 @@ border-radius: 30px;
   }
 
 /* ---------------------------- */
+/* School Page UI */
+/* ------------------ */
+#schoolcontainer{
+  background: url('../img/spikes.png');
+  width: 70%;
+  padding: 4rem 2rem 7rem 29rem;
+  border-radius: 30px;
+    margin-bottom: 30px;
+    }
+  #schoolh5 {
+  color: #1bb1dc;
+  font-size: 39px;
+  font-weight: bold;
+  font-family: inherit;
+  }
+  @media only screen and (max-width: 768px)
+{
+  #schoolh5{
+      margin-left: -16rem;
+  }
+}
+/* --------------------- */
