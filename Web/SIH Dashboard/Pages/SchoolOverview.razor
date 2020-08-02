@@ -7,67 +7,20 @@
 
 @if (feeds != null)
 {
-<div id="wrapper">
-    <div class="chart">
-        <h2>School Overview</h2>
-        <table id="main-table" class="data-table" border="1" cellpadding="10" cellspacing="0">
-            <thead>
-                <tr>
-                    <td>&nbsp;</td>
-                    @foreach (string date in dates)
-                    {
-                        <th scope="col">@date</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">Category 1</th>
-                    @foreach (int i in category1)
-                    {
-                        <td>@i</td>
-                    }
-                </tr>
-                <tr>
-                    <th scope="row">Category 2</th>
-                    @foreach (int i in category2)
-                    {
-                        <td>@i</td>
-                    }
-                </tr>
-                <tr>
-                    <th scope="row">Category 3</th>
-                    @foreach (int i in category1)
-                    {
-                        <td>@i</td>
-                    }
-                </tr>
-            </tbody>
-        </table>
+    <div class="container">
+        <address>Select Category</address>
+        <select class="custom-select d-block w-100" style="max-width:200px" value="@categoryselected" @onchange="LoadGraph">
+            <option value="">Select Category</option>
+            <option value="0">Category 1</option>
+            <option value="1">Category 2</option>
+            <option value="2">Category 3</option>
+            <option value="3">Sentiment</option>
+            <option value="4">All</option>
+        </select>
     </div>
-    <div class="sentiment">
-        <table id="table-sentiment" class="data-table" border="1" cellpadding="10" cellspacing="0">
-            <thead>
-                <tr>
-                    <td>&nbsp;</td>
-                    @foreach (string date in dates)
-                    {
-                        <th scope="col">@date</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">Sentiment Score</th>
-                    @foreach (string i in sentiment)
-                    {
-                        <td>@i</td>
-                    }
-                </tr>
-            </tbody>
-        </table>
+    <div id="graph-container" class="container">
+        <canvas id="myChart" style="max-width: 750px;"></canvas>
     </div>
-</div>
 }
 else
 {
@@ -87,6 +40,7 @@ else
 {
     [Parameter]
     public string SchoolCode { get; set; }
+    private string categoryselected { get; set; }
     private List<Feedbacks> feeds = null;
     private bool chartnotmade = true;
     private string[] dates = { "NA", "NA", "NA", "NA", "NA" };
@@ -100,15 +54,6 @@ else
         {
             LoadFeed();
         }
-        else
-        {
-            if (chartnotmade)
-            {
-                await Runtime.InvokeVoidAsync("DisplayChart", "#main-table", ".chart");
-                await Runtime.InvokeVoidAsync("DisplayChart", "#table-sentiment", ".sentiment");
-                chartnotmade = false;
-            }
-        }
     }
     async void LoadFeed()
     {
@@ -120,7 +65,11 @@ else
             sentiment[i] = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
             for (int j = 0; j < feed.Feedback.Length; j++)
             {
-                int ch = (int)(feed.Feedback[j] - '0');
+                int ch;
+                if (feed.Feedback[j] == 't' || feed.Feedback[j] == 'f')
+                    ch = (feed.Feedback[j] == 't') ? 10 : 0;
+                else
+                    ch = (int)(feed.Feedback[j] - '0');
                 if (ch == 0)
                     ch = 10;
                 if (j < 4)
@@ -131,6 +80,21 @@ else
                     category3[i] += ch;
             }
         }
+        StateHasChanged();
+    }
+    async void LoadGraph(ChangeEventArgs _)
+    {
+        categoryselected = _.Value.ToString();
+        if(categoryselected == "0")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 1", dates, category1);
+        else if(categoryselected == "1")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 2", dates, category2);
+        else if (categoryselected == "2")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 3", dates, category3);
+        else if (categoryselected == "3")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Sentiment Scores", dates, sentiment);
+        else if (categoryselected == "4")
+            await Runtime.InvokeVoidAsync("DisplayLineChart", "myChart", dates, category1, category2, category3, sentiment);
         StateHasChanged();
     }
 }

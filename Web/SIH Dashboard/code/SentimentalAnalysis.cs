@@ -159,6 +159,8 @@ namespace SIH_Dashboard
         {
             if (feed.SentimentScore == null)
             {
+                if (feed.Notes == "")
+                    return "0";
                 var model = await GetAzureSentiment(feed.Notes);
                 string positivesentiment = ((int)(model.ConfidenceScores.Positive * 100)).ToString();
                 DatabaseHelper.WriteData<string>(Runtime, "Feedbacks/" + feed.Id + "/sentimentscore", positivesentiment);

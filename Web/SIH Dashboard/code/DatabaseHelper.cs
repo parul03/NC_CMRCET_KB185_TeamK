@@ -22,7 +22,7 @@ namespace SIH_Dashboard
         /// <param name="Runtime"></param>
         /// <param name="path">path follewed by / from root ref </param>
         /// <param name="data"></param>
-        public async static void WriteData<T>(IJSRuntime Runtime, string path, T data)
+        public async static void  WriteData<T>(IJSRuntime Runtime,string path,T data)
         {
             await Runtime.InvokeVoidAsync("WriteData", path, data);
         }
@@ -42,7 +42,14 @@ namespace SIH_Dashboard
         {
             return await Runtime.InvokeAsync<T>("GetFeedbacks", path, lmt);
         }
-
+        public async static Task<string[]> GetIds(IJSRuntime Runtime,string path,int limit=0)
+        {
+            return await Runtime.InvokeAsync<string[]>("GetIds", path, limit);
+        }
+        public async static Task<T> GetSchools<T>(IJSRuntime Runtime, string path, int lmt = 0)
+        {
+            return await Runtime.InvokeAsync<T>("GetSchools", path, lmt);
+        }
 
     }
 }

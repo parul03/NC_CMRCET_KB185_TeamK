@@ -185,6 +185,20 @@ async function GetFeedbacks(path, lmt) {
     return feeds;
 }
 
+async function GetSchools(path, lmt) {
+    var ids = await GetIds(path, lmt);
+    var feeds = [];
+    for (const id of ids) {
+        var feed = await database.ref("Schools/" + id).once('value').then(function (snapshot) {
+            var feed = snapshot.val();
+            feed.id = snapshot.key;
+            return feed;
+        });
+        feeds.push(feed);
+    }
+    return feeds;
+}
+
 function UseCaptcha(btnid,Dotnet) {
     firebase.auth().languageCode = 'en';
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('otpbtn', {

@@ -6,30 +6,42 @@
 <br />
 <br />
 
-@if (GlobalUser.UID == null)
-{
-    NavManager.NavigateTo("/signin");
 
-}
-@if (schools != null)
+@if (districtoptions != null)
 {
     <div class="container" id="schoolcontainer">
         <h5 id="schoolh5">Schools</h5>
-        <DataTable Searchable="true">
-            <TableHolder ColumnNames="TableOption">
-                @foreach (var school in schools)
-                {
-                    <TableItem>
-                        <TableValue>@school.Id</TableValue>
-                        <TableValue>@school.Name</TableValue>
-                        <TableValue>@school.Address</TableValue>
-                        <TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>
-                    </TableItem>
-                }
-            </TableHolder>
-        </DataTable>
-    </div>
+        <address id="schooladd">Select District</address>
+        <select id="schoolsel" class="custom-select d-block w-100" style="max-width:200px; border-radius: 20px" value="@districtselected" @onchange="LoadDistrictSchools">
+            <option value="">Select District</option>
+   
+            @foreach (string district in districtoptions)
+            {
+                <option value="@district">@district</option>
+            }
+        </select>
+   
+        @if (schools != null)
+        {   
+            <div id="schoolsecondcontainer">
+            <DataTable Searchable="true">
+                <TableHolder ColumnNames="TableOption">
+                    @foreach (var school in schools)
+                    {
+                        <TableItem>
+                            <TableValue>@school.Id</TableValue>
+                            <TableValue>@school.Name</TableValue>
+                            <TableValue>@school.Address</TableValue>
+                            <TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>
+                        </TableItem>
+                    }
+                </TableHolder>
+            </DataTable>
+            </div>
+        }
+  </div>   
 }
+ 
 else
 {
     @if (firstrender)
@@ -43,9 +55,16 @@ else
         <p>Failed to fetch profile data</p>
     }
 }
+@* ____________ *@
+
+
+@* ______________ *@
+
 
 @code {
     private bool firstrender = true;
+    private string districtselected { get; set; } = null;
+    private List<string> districtoptions = null;
     private string[] TableOption = new string[] { "Code", "Name", "Address", "Feedbacks" };
     private List<Schools> schools = null;
     protected override void OnAfterRender(bool firstRender)
@@ -53,17 +72,22 @@ else
         base.OnAfterRender(firstRender);
         if (firstRender)
         {
-            LoadSchools();
+            LoadDistricts();
         }
         else
         {
             firstrender = false;
         }
     }
-    async void LoadSchools()
+    async void LoadDistricts()
     {
-        schools = await DatabaseHelper.ReadList<List<Schools>>(Runtime, "Schools/");
+        districtoptions = await Runtime.InvokeAsync<List<string>>("GetIds", "Districts/", 0);
         StateHasChanged();
     }
-
+    async void LoadDistrictSchools(ChangeEventArgs _)
+    {
+        districtselected = _.Value.ToString();
+        schools = await DatabaseHelper.GetSchools<List<Schools>>(Runtime, "Districts/" + districtselected);
+        StateHasChanged();
+    }
 }

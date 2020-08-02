@@ -4,6 +4,11 @@
 
 <NavBar />
 
+@if (GlobalUser.UID == null || GlobalUser.Role != Roles.Admin)
+{
+    NavManager.NavigateTo("/signin");
+}
+
 @if (useroptions != null)
 {
     <div class="container my-5 py-5 z-depth-1 card">
@@ -34,6 +39,7 @@
                     <div class="form-row mb-4">
                         <label for="user">Select User</label>
                         <select id="user" class="custom-select d-block w-100" @bind="uid">
+                            <option value="">Select User</option>
                             @foreach (string user in useroptions)
                             {
                                 <option value="@user">@user</option>
@@ -41,8 +47,20 @@
                         </select>
                     </div>
                     <div class="form-row mb-4">
-                        <label for="user">Select School</label>
-                        <select id="user" class="custom-select d-block w-100" @bind="schoolcode">
+                        <label for="dis">Select District</label>
+                        <select id="dis" class="custom-select d-block w-100" value="@districtselected" @onchange="LoadDistrictSchools">
+                            <option value="">Select District</option>
+                            @foreach (string district in districtoptions)
+                            {
+                                <option value="@district">@district</option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="form-row mb-4">
+                        <label for="sch">Select School</label>
+                        <select id="sch" class="custom-select d-block w-100" @bind="schoolcode">
+                            <option value="">Select School</option>
                             @foreach (Schools school in schooloptions)
                             {
                                 <option value="@school.Id">@school.Name</option>
@@ -89,9 +107,11 @@ else
     private string ErrorMessage { get; set; }
     private string schoolcode { get; set; } = "";
     private DateTime date { get; set; }
+    private string districtselected { get; set; }
+    private List<string> districtoptions = null;
     private bool firstrender = true;
     private List<string> useroptions = null;
-    private List<Schools> schooloptions = null;
+    private List<Schools> schooloptions = new List<Schools>();
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
@@ -106,8 +126,14 @@ else
     }
     async void LoadData()
     {
-        schooloptions = await DatabaseHelper.ReadList<List<Schools>>(Runtime, "Schools/");
+        districtoptions = await Runtime.InvokeAsync<List<string>>("GetIds", "Districts/", 0);
         useroptions = await Runtime.InvokeAsync<List<string>>("GetIds", "VisitorVerification/", 0);
+        StateHasChanged();
+    }
+    async void LoadDistrictSchools(ChangeEventArgs _)
+    {
+        districtselected = _.Value.ToString();
+        schooloptions = await DatabaseHelper.GetSchools<List<Schools>>(Runtime, "Districts/" + districtselected);
         StateHasChanged();
     }
     void AddTask()
