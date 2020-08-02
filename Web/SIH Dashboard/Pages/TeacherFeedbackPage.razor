@@ -1,0 +1,181 @@
+﻿@page "/teacherfeedback"
+@inject NavigationManager NavManager
+@inject IJSRuntime Runtime
+
+<NavBar/>
+
+@if (GlobalUser.UID == null)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+@if (GlobalUser.Role == Roles.Teacher)
+{
+    if(record==null)
+    {
+        if (studentRecordNull)
+        {
+            <NewTeacherRecordDialog/>
+        }
+        else
+        {
+        <p><br />Fetching...</p>
+        }
+    }
+    else
+    {
+        if(hasSubmittedThisYear)
+        {
+            <MyTableHolder HeaderColor="white" ColumnNames="colms">
+                @if (quizQuestions != null && yournewAnswers.Count>0)
+                {
+                    foreach (var item in quizQuestions)
+                {
+                    <MyTableItem>
+                        <MyTableValue Color="white">@(int.Parse(item.id) + 1)</MyTableValue>
+                        <MyTableValue Color="white">@item.question</MyTableValue>
+                        @if (yournewAnswers.ContainsKey(item.id))
+                        {
+                        <MyTableValue Color="white">
+                            @if (item.TrueFalse)
+                            {
+                                <p>@Convert.ToBoolean(yournewAnswers[item.id])</p>
+                            }
+                            else
+                            {
+                                <p>@yournewAnswers[item.id]</p>
+                            }
+                        </MyTableValue>
+                        }
+                    </MyTableItem>
+                }
+                }
+            </MyTableHolder>
+        }
+        else
+        {
+            if (yournewAnswers != null)
+            {
+            <MyTableHolder  HeaderColor="white" ColumnNames="colms">
+                @if (quizQuestions != null)
+                {
+                @foreach (var item in quizQuestions)
+                {
+                <MyTableItem>
+                    <MyTableValue Color="white">@(int.Parse(item.id) + 1)</MyTableValue>
+                    <MyTableValue Color="white">@item.question</MyTableValue>
+                    <MyTableValue Color="white">
+                        @if (item.TrueFalse)
+                        {
+                            <input type="checkbox" @bind-value="yourCheckbox[item.id]" />
+                        }
+                        else
+                        {
+                            <input type="number" max="10" @bind-value="yournewAnswers[item.id]" />
+                        }
+                    </MyTableValue>
+                </MyTableItem>
+                }
+                }
+            </MyTableHolder>
+
+            <button class="btn btn-primary" @onclick="SaveAnswers">Save Changes</button>
+            }
+        }
+    }
+}
+
+@code 
+{   
+    string[] colms = new string[] { "Question No", "Question", "Your Response" };
+
+    TeacherRecord record;
+    string path = "TeacherFeedbackQuestion/";
+    string responsePath = "TeacherFeedbackResponse/";
+    bool studentRecordNull = false;
+    bool hasSubmittedThisYear ;
+    List<QuizQuestion> quizQuestions;
+    Dictionary<string, int> yournewAnswers=new Dictionary<string, int>();
+    Dictionary<string, bool> yourCheckbox = new Dictionary<string, bool>();
+    protected override Task OnInitializedAsync()
+    {
+        FetchRecord();
+        return base.OnInitializedAsync();
+    }
+    void SaveAnswers()
+    {
+        foreach (var item in yourCheckbox)
+        {
+            yournewAnswers.Add(item.Key, Convert.ToInt32(item.Value));
+        }
+
+        DatabaseHelper.WriteData(Runtime, responsePath + record.SchoolCode
+            + "/" + record.Session + "/" + record.TeacherId,yournewAnswers);
+        FetchRecord();
+        hasSubmittedThisYear = true;
+        StateHasChanged();
+    }
+    async void LoadAnswers()
+    {
+        var v = await DatabaseHelper.ReadData<int[]>(Runtime, responsePath + record.SchoolCode
+            + "/" + record.Session + "/" + record.TeacherId);
+        yournewAnswers.Clear();
+        for (int i = 0; i < v.Length; i++)
+        {
+            yournewAnswers.Add(i.ToString(), v[i]);
+        }
+        StateHasChanged();
+    }
+    async void LoadQuestions()
+    {
+        quizQuestions = await DatabaseHelper.ReadData<List<QuizQuestion>>(Runtime, path);
+        if(quizQuestions!=null)
+        {
+            foreach (var item in quizQuestions)
+            {
+                if (item.TrueFalse)
+                    yourCheckbox.Add(item.id, false);
+                else
+                    yournewAnswers.Add(item.id, 0);
+            }
+        }
+        StateHasChanged();
+    }
+    async void FetchRecord()
+    {
+        if (GlobalUser.Role == Roles.Teacher)
+        {
+            var path = "Records/" + GlobalUser.UID;
+            record = await DatabaseHelper.ReadData<TeacherRecord>(Runtime, path);
+            if(record==null)
+            {
+                studentRecordNull = true;
+            }
+            else
+            {
+                hasSubmittedThisYear = await CheckYearFeedback();
+            }
+            StateHasChanged();
+        }
+
+    }
+
+    async Task<bool> CheckYearFeedback()
+    {
+        var res = await DatabaseHelper.ReadData<int[]>(Runtime,responsePath+record.SchoolCode
+            +"/"+record.Session+"/"+ record.TeacherId);
+
+        LoadQuestions();
+
+        if (res==null)
+        {
+            return false;
+        }
+        else
+        {
+            LoadAnswers();
+            return true;
+        }
+    }
+
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:sih/finger.dart';
 import 'package:sih/home.dart';
 import 'package:sih/models/models.dart';
 
@@ -9,7 +10,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Smart Indian Hackathon",
-    home: HomeScreen(),
+    home: MyApp(),
     darkTheme: ThemeData(backgroundColor: Colors.white),
     theme: ThemeData(primaryColor: Colors.blueAccent),
   ));
@@ -152,7 +153,7 @@ class _MyAppState extends State<MyApp> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) {
           // return
-          return HomeScreen();
+          return FingerScreen();
         },
       ));
     } catch (e) {
