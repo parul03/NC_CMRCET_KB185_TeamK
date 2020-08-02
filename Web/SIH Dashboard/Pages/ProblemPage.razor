@@ -3,6 +3,59 @@
 @inject NavigationManager NavManager
 
 <NavBar />
+<style>
+    #jumboimg{
+        background: url(./img/pen1.svg);
+        background-repeat: no-repeat;
+        border-radius: 50%;
+        width: 9rem;
+        background-position: center;
+        position: absolute;
+        background-size: 86px;
+        margin-left: 75rem;
+        margin-top: 10rem;
+        background-color: #f5faff;
+    }
+    #problemjumbo{
+    
+    background-color:#f5faff;
+    color: #b8e3ef;
+    box-shadow: 11px 10px 20px;
+	width: 50%;
+	margin-left: 27rem;
+	margin-top: 7rem;
+	padding: 7rem 0rem;
+	border-radius: 20px;
+    font-weight: 900;
+	
+
+    }
+    .card-body{
+	width: 50%;
+	margin-left: 14rem;
+	border-radius: 20px;
+    }
+    h1{
+        margin-left: 16rem;
+        font-size: 31px;
+    }
+
+    textarea{
+        margin-left: 11rem;
+        height: 13rem;
+        width: 31rem;
+        border-radius:8px;
+       
+    }
+    #inputprob{
+        margin-left: 11rem;
+        width: 31rem;
+        height: 4rem;
+        margin-bottom: 11px;
+        border-radius: 5px;
+        text-align: center;
+    }
+</style>
 
 @if (GlobalUser.UID == null)
     {
@@ -68,12 +121,14 @@ else
 
     }
     else if (choice == 0)
-    {
-        <input type="text" @bind-value="title" placeholder="Enter Topic" />
+    {     <div class="jumbotron" id="jumboimg"></div>
+        <div class="jumbotron" id="problemjumbo"> 
+        <input id="inputprob" type="text" @bind-value="title" placeholder="Enter Topic" />
         <br />
         <textarea type="text" @bind="problemDesc">Description</textarea>
         <br />
-        <button class="btn btn-primary" @onclick="CreateIssue">Create</button>
+        <button class="btn  blue-gradient waves-effect" @onclick="CreateIssue">Create</button>
+        </div>
         if(error!=null)
         {
             <div class="alert-danger">@error</div>
