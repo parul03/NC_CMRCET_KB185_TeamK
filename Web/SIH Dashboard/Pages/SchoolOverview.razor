@@ -5,96 +5,106 @@
 <link rel="stylesheet" href="css/chart-table.css">
 <NavBar />
 
-@if (feeds != null)
-{
-    <div class="container">
-        <address>Select Category</address>
-        <select class="custom-select d-block w-100" style="max-width:200px" value="@categoryselected" @onchange="LoadGraph">
-            <option value="">Select Category</option>
-            <option value="0">Category 1</option>
-            <option value="1">Category 2</option>
-            <option value="2">Category 3</option>
-            <option value="3">Sentiment</option>
-            <option value="4">All</option>
-        </select>
-    </div>
-    <div id="graph-container" class="container">
-        <canvas id="myChart" style="max-width: 750px;"></canvas>
-    </div>
-}
-else
-{
-    @if (chartnotmade)
+<div class="container">
+    @if(school != null)
     {
-        <br />
-        <p>Loading</p>
+        <h2>@school.Name</h2>
+    }
+    <canvas id="doughnutChart" style="max-width:500px"></canvas>
+    @if (feeds != null)
+    {
+            <address>Select Category</address>
+            <select class="custom-select d-block w-100" style="max-width:200px" value="@categoryselected" @onchange="LoadGraph">
+                <option value="">Select Category</option>
+                <option value="0">Category 1</option>
+                <option value="1">Category 2</option>
+                <option value="2">Category 3</option>
+                <option value="3">Sentiment</option>
+                <option value="4">All</option>
+            </select>
+        <div id="graph-container" class="container">
+            <canvas id="myChart" style="max-width: 750px;"></canvas>
+        </div>
     }
     else
     {
-        <br />
-        <p>Failed to fetch profile data</p>
-    }
-}
-
-@code
-{
-    [Parameter]
-    public string SchoolCode { get; set; }
-    private string categoryselected { get; set; }
-    private List<Feedbacks> feeds = null;
-    private bool chartnotmade = true;
-    private string[] dates = { "NA", "NA", "NA", "NA", "NA" };
-    private int[] category1 = { 0, 0, 0, 0, 0 };
-    private int[] category2 = { 0, 0, 0, 0, 0 };
-    private int[] category3 = { 0, 0, 0, 0, 0 };
-    private string[] sentiment = { "0", "0", "0", "0", "0" };
-    protected async override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
+        @if (chartnotmade)
         {
-            LoadFeed();
+            <br />
+            <p>Loading</p>
+        }
+        else
+        {
+            <br />
+            <p>Failed to fetch profile data</p>
         }
     }
-    async void LoadFeed()
-    {
-        feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "school_feedbacks/" + SchoolCode, 5);
-        for (int i = 0; i < feeds.Count; i++)
+</div>
+
+    @code
+{
+        [Parameter]
+        public string SchoolCode { get; set; }
+        private string categoryselected { get; set; }
+        private List<Feedbacks> feeds = null;
+        private bool chartnotmade = true;
+        private Schools school = null;
+        private string[] dates = { "NA", "NA", "NA", "NA", "NA" };
+        private int[] category1 = { 0, 0, 0, 0, 0 };
+        private int[] category2 = { 0, 0, 0, 0, 0 };
+        private int[] category3 = { 0, 0, 0, 0, 0 };
+        private string[] sentiment = { "0", "0", "0", "0", "0" };
+        private string[] doughnutlabels = { "Safety", "Academics", "Health", "Discipline", "Meals", "Activities" };
+        protected async override void OnAfterRender(bool firstRender)
         {
-            var feed = feeds[i];
-            dates[i] = feed.Date;
-            sentiment[i] = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
-            for (int j = 0; j < feed.Feedback.Length; j++)
+            if (firstRender)
             {
-                int ch;
-                if (feed.Feedback[j] == 't' || feed.Feedback[j] == 'f')
-                    ch = (feed.Feedback[j] == 't') ? 10 : 0;
-                else
-                    ch = (int)(feed.Feedback[j] - '0');
-                if (ch == 0)
-                    ch = 10;
-                if (j < 4)
-                    category1[i] += ch;
-                else if (j < 7)
-                    category2[i] += ch;
-                else
-                    category3[i] += ch;
+                LoadFeed();
             }
         }
-        StateHasChanged();
+        async void LoadFeed()
+        {
+            feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "school_feedbacks/" + SchoolCode, 5);
+            school = await DatabaseHelper.ReadData<Schools>(Runtime, "Schools/" + SchoolCode);
+            int[] chartdata = { school.CategoryScores.Safety, school.CategoryScores.Academics, school.CategoryScores.Health, school.CategoryScores.Discipline, school.CategoryScores.Meals, school.CategoryScores.Activities};
+            await Runtime.InvokeVoidAsync("DisplayDoughnutChart", doughnutlabels, chartdata);
+            for (int i = 0; i < feeds.Count; i++)
+            {
+                var feed = feeds[i];
+                dates[i] = feed.Date;
+                sentiment[i] = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
+                for (int j = 0; j < feed.Feedback.Length; j++)
+                {
+                    int ch;
+                    if (feed.Feedback[j] == 't' || feed.Feedback[j] == 'f')
+                        ch = (feed.Feedback[j] == 't') ? 10 : 0;
+                    else
+                        ch = (int)(feed.Feedback[j] - '0');
+                    if (ch == 0)
+                        ch = 10;
+                    if (j < 4)
+                        category1[i] += ch;
+                    else if (j < 7)
+                        category2[i] += ch;
+                    else
+                        category3[i] += ch;
+                }
+            }
+            StateHasChanged();
+        }
+        async void LoadGraph(ChangeEventArgs _)
+        {
+            categoryselected = _.Value.ToString();
+            if (categoryselected == "0")
+                await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 1", dates, category1);
+            else if (categoryselected == "1")
+                await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 2", dates, category2);
+            else if (categoryselected == "2")
+                await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 3", dates, category3);
+            else if (categoryselected == "3")
+                await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Sentiment Scores", dates, sentiment);
+            else if (categoryselected == "4")
+                await Runtime.InvokeVoidAsync("DisplayLineChart", "myChart", dates, category1, category2, category3, sentiment);
+            StateHasChanged();
+        }
     }
-    async void LoadGraph(ChangeEventArgs _)
-    {
-        categoryselected = _.Value.ToString();
-        if(categoryselected == "0")
-            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 1", dates, category1);
-        else if(categoryselected == "1")
-            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 2", dates, category2);
-        else if (categoryselected == "2")
-            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Category 3", dates, category3);
-        else if (categoryselected == "3")
-            await Runtime.InvokeVoidAsync("DisplayColumnChart", "myChart", "Sentiment Scores", dates, sentiment);
-        else if (categoryselected == "4")
-            await Runtime.InvokeVoidAsync("DisplayLineChart", "myChart", dates, category1, category2, category3, sentiment);
-        StateHasChanged();
-    }
-}
