@@ -15,18 +15,18 @@ class QuestionScreen extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 2,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("assets/icons/blackboard.png"),
-          fit: BoxFit.cover,
+          image: AssetImage('assets/images/blackboard.png'),
+          fit: BoxFit.fill,
         ),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.7),
-        //     blurRadius: 20,
-        //     spreadRadius: 10,
-        //   )
-        // ],
-        // color: Colors
-        //     .indigo, //(questionsController.currentQuestion * 100) % 400 + 400],
+        boxShadow: [
+          // BoxShadow(
+          //   color: Colors.black.withOpacity(0.7),
+          //   blurRadius: 20,
+          //   spreadRadius: 10,
+          // )
+        ],
+        color: Colors
+            .indigo, //(questionsController.currentQuestion * 100) % 400 + 400],
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),
@@ -41,6 +41,7 @@ class QuestionScreen extends StatelessWidget {
             style: TextStyle(
               color: Colors.white,
               fontSize: 25,
+              fontFamily: 'Chalktastic',
               //fontWeight: FontWeight.bold,
             ),
           ),

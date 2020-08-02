@@ -73,6 +73,14 @@ flutter:
           weight: 600
         - asset: assets/fonts/Poppins/Poppins-Bold.ttf
           weight: 700
+    - family: Blackboard
+      fonts:
+        - asset: assets/fonts/chalkfont-Regular.ttf
+        # - asset: fonts/Schyler-Italic.ttf
+          # style: italic
+    - family: Chalktastic
+      fonts:
+        - asset: assets/fonts/chalktastic-Regular.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
