@@ -116,29 +116,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisSpacing: 10,
                   crossAxisCount: 5,
                   children: List.generate(10, (index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.blue.withOpacity(0.7), Colors.blue],
-                          begin: Alignment.bottomRight,
-                          end: Alignment.topLeft,
+                    return InkWell(
+                      onTap: () {
+                        questions[i].result = (index).toString();
+                        goForward();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: questions[i].result != (index).toString()
+                                ? [Colors.lightBlueAccent, Colors.blue]
+                                : [Colors.indigo, Colors.blue],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          // border: Border.all(color: Colors.blue, width: 4),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.blue, width: 4),
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          questions[i].result = (index).toString();
-                          goForward();
-                        },
-                        hoverColor: Colors.indigoAccent,
-                        color: questions[i].result == (index).toString()
-                            ? Colors.indigoAccent
-                            : Colors.transparent,
                         child: Text(
                           (index + 1).toString(),
                           style: TextStyle(
                             fontSize: 18,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -149,25 +147,22 @@ class _MyHomePageState extends State<MyHomePage> {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.blue.withOpacity(0.7), Colors.blue],
-                          begin: Alignment.bottomRight,
-                          end: Alignment.topLeft,
+                    InkWell(
+                      onTap: () {
+                        questions[i].result = "t";
+                        goForward();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: questions[i].result != "t"
+                                ? [Colors.lightBlueAccent, Colors.blue]
+                                : [Colors.indigo, Colors.blue],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          // border: Border.all(color: Colors.blue, width: 4),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.blue, width: 4),
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          questions[i].result = "t";
-                          goForward();
-                        },
-                        hoverColor: Colors.indigoAccent,
-                        color: questions[i].result == "t"
-                            ? Colors.indigoAccent
-                            : Colors.transparent,
                         child: Text(
                           "True",
                           style: TextStyle(
@@ -178,25 +173,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.blue.withOpacity(0.7), Colors.blue],
-                          begin: Alignment.bottomRight,
-                          end: Alignment.topLeft,
+                    InkWell(
+                      onTap: () {
+                        questions[i].result = "f";
+                        goForward();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: questions[i].result != "f"
+                                ? [Colors.lightBlueAccent, Colors.blue]
+                                : [Colors.indigo, Colors.blue],
+                            begin: Alignment.bottomRight,
+                            end: Alignment.topLeft,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          // border: Border.all(color: Colors.blue, width: 4),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.blue, width: 4),
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          questions[i].result = "f";
-                          goForward();
-                        },
-                        hoverColor: Colors.indigoAccent,
-                        color: questions[i].result == "f"
-                            ? Colors.indigoAccent
-                            : Colors.transparent,
                         child: Text(
                           "False",
                           style: TextStyle(
@@ -219,21 +213,25 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                //color: Theme.of(context).primaryColor,
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).primaryColor,
+              Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                  //color: Theme.of(context).primaryColor,
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: goBackward,
                 ),
-                onPressed: goBackward,
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_forward,
-                  color: Theme.of(context).primaryColor,
-                ),
-                onPressed: goForward,
-              ),
+
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.arrow_forward,
+              //     color: Theme.of(context).primaryColor,
+              //   ),
+              //   onPressed: goForward,
+              // ),
             ],
           ),
         ),

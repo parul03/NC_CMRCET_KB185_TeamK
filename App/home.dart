@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -39,8 +40,63 @@ class _HomeScreenState extends State<HomeScreen> {
     data = List();
     super.initState();
     controller.addListener(onScroll);
-    getLocation();
+    checkTask();
+    // here = 3;
     setState(() {});
+  }
+
+  String date = "";
+
+  checkTask() async {
+    FirebaseDatabase.instance
+        .reference()
+        .child("Tasks")
+        .child(GlobalUser.no)
+        .once()
+        .then((value) {
+      schoolCode = value.value["schoolCode"];
+      date = value.value["date"];
+    }).whenComplete(() {
+      DateTime dat = DateTime.now();
+      String da = DateTime.now().toString();
+      print(da);
+      RegExp exp = new RegExp(r"(\d\d\d\d)-(\d\d)-(\d\d)");
+      Iterable<Match> matches = exp.allMatches(da);
+      print("mathces" +
+          matches.elementAt(0).group(3) +
+          matches.elementAt(0).group(2) +
+          matches.elementAt(0).group(1));
+
+      da = matches.elementAt(0).group(3) +
+          "/" +
+          matches.elementAt(0).group(2) +
+          "/" +
+          matches.elementAt(0).group(1);
+      print(dat.day.toString() +
+          "/" +
+          dat.month.toString() +
+          "/" +
+          dat.year.toString());
+
+      FirebaseDatabase.instance
+          .reference()
+          .child("Schools")
+          .child(schoolCode)
+          .child("name")
+          .once()
+          .then((value) {
+        schoolName = value.value;
+      }).whenComplete(() {
+        setState(() {});
+      });
+
+      if (date == da)
+        getLocation();
+      else
+        here = 2;
+      setState(() {});
+    });
+    print(date);
   }
 
   getLocation() async {
@@ -62,9 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _locationData = await location.getLocation();
     print(_locationData);
-    // l1 = LatLng(_locationData.latitude, _locationData.longitude);
-    // l2 = LatLng(28.318491, 78.920935);
-    // var c = Geodesy().distanceBetweenTwoGeoPoints(l1, l2);
     var x = calculateDistance(
         _locationData.latitude, _locationData.longitude, 28.318491, 78.920935);
     print("this is distance  " + x.toString());
@@ -73,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       // here = 2;
 
-      //!!  *********  TDOD
+      //!!  *********  TDOD   **************************
       here = 3;
     }
     setState(() {});
@@ -174,27 +227,38 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Row(
                       children: <Widget>[
-                        SvgPicture.asset("assets/icons/maps-and-flags.svg"),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: DropdownButton(
-                            isExpanded: true,
-                            underline: SizedBox(),
-                            icon: SvgPicture.asset("assets/icons/dropdown.svg"),
-                            value: "XYZ School",
-                            items: [
-                              'XYZ School',
-                              'abc school',
-                              'dfe school',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (value) {},
-                          ),
+                        Stack(
+                          children: [
+                            SvgPicture.asset("assets/icons/maps-and-flags.svg"),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 28.0),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(schoolName),
+                              ),
+                            )
+                          ],
                         ),
+                        SizedBox(width: 20),
+                        // Expanded(
+                        //   child: DropdownButton(
+                        //     isExpanded: true,
+                        //     underline: SizedBox(),
+                        //     icon: SvgPicture.asset("assets/icons/dropdown.svg"),
+                        //     value: schoolCode,
+                        //     items: [
+                        //       'XYZ School',
+                        //       'abc school',
+                        //       'dfe school',
+                        //     ].map<DropdownMenuItem<String>>((String value) {
+                        //       return DropdownMenuItem<String>(
+                        //         value: value,
+                        //         child: Text(value),
+                        //       );
+                        //     }).toList(),
+                        //     onChanged: (value) {},
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -384,7 +448,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         height: 30,
                       ),
-                      Text("You have to go school whose school code is 5685"),
+                      Text(
+                        "You have to go school whose school code is $schoolCode on $date",
+                        textAlign: TextAlign.center,
+                      ),
                       SizedBox(
                         height: 50,
                       ),

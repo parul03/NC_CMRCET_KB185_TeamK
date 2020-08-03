@@ -10,7 +10,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Smart Indian Hackathon",
-    home: MyApp(),
+    home: HomeScreen(),
     darkTheme: ThemeData(backgroundColor: Colors.white),
     theme: ThemeData(primaryColor: Colors.blueAccent),
   ));

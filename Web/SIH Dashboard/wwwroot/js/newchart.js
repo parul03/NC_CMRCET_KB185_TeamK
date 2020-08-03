@@ -69,10 +69,10 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, cat4, cat5, cat6) {
                 label: "Discipline",
                 data: cat2,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(242, 242, 111, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(255, 229, 0, .7)',
                 ],
                 borderWidth: 2
             },
@@ -80,10 +80,10 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, cat4, cat5, cat6) {
                 label: "Health",
                 data: cat3,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(186, 242, 192, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(89, 255, 0, .7)',
                 ],
                 borderWidth: 2
             },
@@ -91,10 +91,10 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, cat4, cat5, cat6) {
                 label: "Activities",
                 data: cat4,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(244, 212, 173, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(247, 151, 7, .7)',
                 ],
                 borderWidth: 2
             },
@@ -102,10 +102,10 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, cat4, cat5, cat6) {
                 label: "Safety",
                 data: cat5,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(177, 237, 237, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(191, 242, 238, .7)',
                 ],
                 borderWidth: 2
             },
@@ -134,13 +134,18 @@ function DisplayDoughnutChart(id, labels, chartdata) {
         data: {
             labels: labels,
             datasets: [{
+                
                 data: chartdata,
                 backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360", "#4D5360"],
                 hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774", "#616774"]
             }]
         },
         options: {
+            legend: {
+                display: false
+            },
             responsive: true
+
         }
     });
 }
