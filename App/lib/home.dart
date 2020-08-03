@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final controller = ScrollController();
   double offset = 0;
   int here;
+  List<String> headings;
 
   Location location = new Location();
 
@@ -41,6 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     controller.addListener(onScroll);
     checkTask();
+    headings = List();
+    headings.add("Academics");
+    headings.add("Discipline");
+    headings.add("Hygiene");
+    headings.add("Activities");
+    headings.add("Safety");
+    headings.add("Meals");
     // here = 3;
     setState(() {});
   }
@@ -231,9 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             SvgPicture.asset("assets/icons/maps-and-flags.svg"),
                             Padding(
-                              padding: const EdgeInsets.only(left: 28.0),
+                              padding: const EdgeInsets.only(left: 50.0),
                               child: Align(
-                                alignment: Alignment.bottomRight,
+                                alignment: Alignment.topCenter,
                                 child: Text(schoolName),
                               ),
                             )
@@ -400,38 +408,56 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 20),
-                          padding: EdgeInsets.all(20),
-                          height: 178,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 10),
-                                blurRadius: 30,
-                                color: kShadowColor,
-                              ),
-                            ],
-                          ),
-                          // child: Image.asset(
-                          //   "assets/images/inde.png",
-                          //   fit: BoxFit.fill,
-                          // ),
-                          child: data.length != 0
-                              ? new Sparkline(
-                                  data: data.length == 0 ? [0, 0] : data,
-                                  lineColor: Colors.lightGreen[500],
-                                  fillMode: FillMode.below,
-                                  fillColor: Colors.lightGreen[200],
-                                  pointsMode: PointsMode.all,
-                                  pointSize: 5.0,
-                                  pointColor: Colors.amber,
-                                )
-                              : Container(
-                                  child: Text("Report"),
-                                ),
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 6,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(headings[index]),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 20),
+                                        padding: EdgeInsets.all(20),
+                                        height: 178,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color:
+                                              Color.fromRGBO(212, 228, 255, 1),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 10),
+                                              blurRadius: 30,
+                                              color: kShadowColor,
+                                            ),
+                                          ],
+                                        ),
+                                        // child: Image.asset(
+                                        //   "assets/images/inde.png",
+                                        //   fit: BoxFit.fill,
+                                        // ),
+                                        child: data.length != 0
+                                            ? Chart(
+                                                data: data,
+                                                index: index,
+                                              )
+                                            : Container(
+                                                child: Text("Report"),
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
                         ),
                       ],
                     ),
@@ -440,40 +466,85 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             )
           : here == 2
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("You are not at rigth place"),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text(
-                        "You have to go school whose school code is $schoolCode on $date",
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      RaisedButton(
-                        onPressed: () async {
-                          await MapsLauncher.launchCoordinates(
-                              37.4220041, -122.0862462);
-                        },
-                        child: Text(
-                          "Click here to see the location",
-                          style: TextStyle(color: Colors.white),
+              ? Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    Colors.white,
+                    Colors.grey.withOpacity(0.5)
+                  ])),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "You are not at rigth place",
+                          style: kTitleTextstyle,
                         ),
-                        color: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                      )
-                    ],
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text(
+                          "Please reach $schoolName on $date",
+                          textAlign: TextAlign.center,
+                          style: kTitleTextstyle,
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        RaisedButton(
+                          onPressed: () async {
+                            await MapsLauncher.launchCoordinates(
+                                37.4220041, -122.0862462);
+                          },
+                          child: Text(
+                            "Click here to see the location",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          color: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                        )
+                      ],
+                    ),
                   ),
                 )
               : Center(
                   child: CircularProgressIndicator(),
                 ),
+    );
+  }
+}
+
+class Chart extends StatelessWidget {
+  final int index;
+  const Chart({
+    Key key,
+    @required this.data,
+    this.index,
+  }) : super(key: key);
+
+  final List<double> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Sparkline(
+      data: index == 0
+          ? data.sublist(0, 13)
+          : index == 1
+              ? data.sublist(13, 23)
+              : index == 2
+                  ? data.sublist(23, 33)
+                  : index == 3
+                      ? data.sublist(33, 43)
+                      : index == 4 ? data.sublist(43, 63) : data.sublist(63),
+      lineColor: Colors.lightGreen[500],
+      fillMode: FillMode.below,
+      fillColor: Colors.lightGreen[200],
+      pointsMode: PointsMode.all,
+      pointSize: 5.0,
+      pointColor: Colors.amber,
     );
   }
 }
