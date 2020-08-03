@@ -1,0 +1,79 @@
+﻿@page "/verifyfeedback"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+<NavBar />
+
+@if (GlobalUser.UID == null || GlobalUser.Role != Roles.Admin)
+{
+    NavManager.NavigateTo("/signin");
+
+}
+@if (feeds != null)
+{
+    <div class="container">
+        <h1>Verify Feedbacks</h1>
+        <MyTableHolder HeaderColor="white" ColumnNames="TableOptions">
+
+            @foreach (var feed in feeds)
+            {
+                <MyTableItem>
+
+                    <MyTableValue Color="white">@feed.Date</MyTableValue>
+                    <MyTableValue Color="white">@feed.SchoolCode</MyTableValue>
+                    <MyTableValue Color="white">@feed.SubmitterId</MyTableValue>
+                    <MyTableValue Color="white"><a href="feedback/@feed.Id">View Feedback</a></MyTableValue>
+                    <MyTableValue Color="white"><input type="checkbox" class="form-control" @bind-value="feed.Verified" /></MyTableValue>
+                </MyTableItem>
+
+            }
+
+        </MyTableHolder>
+        <button type="button" class="btn btn-primary flex-center" @onclick="Upload">Save Changes</button>
+    </div>
+}
+else
+{
+    @if (firstrender)
+    {
+        <br />
+        <p>Loading</p>
+    }
+    else
+    {
+        <br />
+        <p>Nothing to show</p>
+    }
+}
+
+@code {
+
+    private string[] TableOptions = { "Date", "School Code", "Submitted By", "View Feedback", "Approve" };
+    private List<Feedbacks> feeds = null;
+    bool firstrender = true;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            firstrender = false;
+            LoadFeed();
+        }
+    }
+    async void LoadFeed()
+    {
+        feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "Verify/");
+        StateHasChanged();
+    }
+    async void Upload()
+    {
+        foreach (var feed in feeds)
+        {
+            if (feed.Verified)
+            {
+                await Runtime.InvokeVoidAsync("VerifyFeedback", feed.Id, feed.SchoolCode, feed.SubmitterId);
+            }
+            LoadFeed();
+            StateHasChanged();
+        }
+    }
+}

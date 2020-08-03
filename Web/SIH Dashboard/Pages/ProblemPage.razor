@@ -4,32 +4,6 @@
 
 <NavBar />
 <style>
-    #jumboimg{
-        background: url(./img/pen1.svg);
-        background-repeat: no-repeat;
-        border-radius: 50%;
-        width: 9rem;
-        background-position: center;
-        position: absolute;
-        background-size: 86px;
-        margin-left: 75rem;
-        margin-top: 10rem;
-        background-color: #f5faff;
-    }
-    #problemjumbo{
-    
-    background-color:#f5faff;
-    color: #b8e3ef;
-    box-shadow: 11px 10px 20px;
-	width: 50%;
-	margin-left: 27rem;
-	margin-top: 7rem;
-	padding: 7rem 0rem;
-	border-radius: 20px;
-    font-weight: 900;
-	
-
-    }
     .card-body{
 	width: 50%;
 	margin-left: 14rem;
@@ -39,42 +13,44 @@
         margin-left: 16rem;
         font-size: 31px;
     }
-
     textarea{
-        margin-left: 11rem;
-        height: 13rem;
-        width: 31rem;
-        border-radius:8px;
-       
+margin-left: 8rem;
+height: 13rem;
+width: 31rem;
+border-radius: 8px;
     }
-    #inputprob{
-        margin-left: 11rem;
-        width: 31rem;
-        height: 4rem;
-        margin-bottom: 11px;
-        border-radius: 5px;
-        text-align: center;
-    }
-</style>
 
+    #problemPagebtn{
+        font-size: 1.0rem;
+        padding: 10px 15px;
+
+    }
+
+</style>
 @if (GlobalUser.UID == null)
     {
         NavManager.NavigateTo("/signin");
 
     }
-    else
-    {
-
-    }
 
 @if (schoolCOde == null)
-{
-    <div class="flex-center">
-        <input type="number" @bind-value="schoolCOde" placeholder="Enter School Code" />
-        <button class="btn btn-primary" @onclick="()=> { StateHasChanged(); }">Enter</button>
+{   
+<div class="jumbotron" id="problemjumbo">
+    <h1 style="font-family: 'Nunito', sans-serif; color:#1bb1dc">Enter School Code</h1>
+    <div class="card-body">
+        <div class="flex-center">
+            <input type="number" @bind-value="schoolCOde" placeholder="Enter School Code" />
+            <button id="problemPagebtn" class="btn blue-gradient waves-effect" @onclick="()=> { StateHasChanged(); }">Enter</button>
 
+        </div>
     </div>
+</div>
+
+
+
+
 }
+
 else
 {
     if (choice == -1)
@@ -120,15 +96,16 @@ else
 
 
     }
+   
     else if (choice == 0)
-    {     <div class="jumbotron" id="jumboimg"></div>
-        <div class="jumbotron" id="problemjumbo"> 
-        <input id="inputprob" type="text" @bind-value="title" placeholder="Enter Topic" />
-        <br />
-        <textarea type="text" @bind="problemDesc">Description</textarea>
-        <br />
-        <button class="btn  blue-gradient waves-effect" @onclick="CreateIssue">Create</button>
-        </div>
+    {   <div class="jumbotron" id="jumboimg"></div>
+        <div class="jumbotron" id="problemjumbo">
+            <input id="inputprob" type="text" @bind-value="title" placeholder="Enter Topic" />
+            <br />
+            <textarea type="text" @bind="problemDesc">Description</textarea>
+            <br />
+            <button class="btn blue-gradient waves-effect" @onclick="CreateIssue" style="margin-left: 20rem;">Create</button>
+         </div>
         if(error!=null)
         {
             <div class="alert-danger">@error</div>
@@ -159,16 +136,21 @@ else
                 }
             </MyTableHolder>
         }
+        
+
     }
+   
+
 }
+
 
 @code
 {
     string[] colms = new string[] {"School Code","Problem","Created Date","View Status" };
 
     string uid;
-    string problemDesc = "poor fcilities";
-    string title = "bad school";
+    string problemDesc = "";
+    string title = "";
     string schoolCOde = null;
     Roles role;
     int choice = -1;

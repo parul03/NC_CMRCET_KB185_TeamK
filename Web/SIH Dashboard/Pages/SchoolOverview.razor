@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 id="h2overview" class="pageheader-title">School Overview - @(school==null?SchoolCode:school.Name) </h2>
+                            <h2 id="h2overview" class="pageheader-title">@(school==null?SchoolCode:school.Name) </h2>
                         </div>
                     </div>
                 </div>
@@ -65,14 +65,14 @@
                         <div class="card" style="height: 28rem;" id="overviewcard">
                             <div class="card-header">
                                 <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0"> Line</h5>
+                            <select class="custom-select">
+                                <option selected>Today</option>
+                                <option value="1">Weekly</option>
+                                <option value="2">Monthly</option>
+                                <option value="3">Yearly</option>
+                            </select>
+                        </div> -->
+                                <h5 class="mb-0">All Categories</h5>
                             </div>
                             <div class="card-body">
                                 <div class="ct-chart-product ct-golden-section">
@@ -152,8 +152,7 @@
 
 
 
-
-
+                
                 <div class="row">
                     <!-- ============================================================== -->
                     <!-- sales  -->
@@ -162,19 +161,22 @@
                     <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card" id="overviewcard">
                             <div class="card-header">
-                                <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0">Academics</h5>
+                                <div class="float-right">
+                            <select class="custom-select d-block w-100" style="max-width:200px" value="@categoryselected" @onchange="LoadGraph">
+                    <option value="">Select Category</option>
+                    <option value="0">Academics</option>
+                    <option value="1">Discipline</option>
+                    <option value="2">Health & Hygiene</option>
+                    <option value="3">Activities</option>
+                    <option value="4">Safety</option>
+                    <option value="5">Meals</option>
+                </select>
+                        </div>
+                                <h5 class="mb-0">@(categoryselected==null?"Select Category":doughnutlabels[int.Parse(categoryselected)])</h5>
                             </div>
                             <div class="card-body">
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="academics" style="max-width:800px"></canvas>
+                                <div class="ct-chart-product ct-golden-section" id="allcontainer">
+                                    <canvas id="all" style="max-width:800px"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -186,25 +188,6 @@
                     <!-- new customer  -->
                     <!-- ============================================================== -->
                     <!-- ============================================================== -->
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <div class="card-header">
-                                <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0">Discipline</h5>
-                            </div>
-                            <div class="card-body" >
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="discipline" style="max-width:800px"></canvas>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <!-- ============================================================== -->
                     <!-- end new customer  -->
@@ -224,136 +207,7 @@
                 </div>
 
 
-                <div class="row">
-                    <!-- ============================================================== -->
-                    <!-- sales  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <div class="card-header">
-                                <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0">Health</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="health" style="max-width:800px"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end sales  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- new customer  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <div class="card-header">
-                                <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0">Activities</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="activities" style="max-width:800px"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end new customer  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- visitor  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- end visitor  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- total orders  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- end total orders  -->
-                    <!-- ============================================================== -->
-                </div>
-
-
-                <div class="row">
-                    <!-- ============================================================== -->
-                    <!-- sales  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <div class="card-header">
-                                <!-- <div class="float-right">
-                                        <select class="custom-select">
-                                            <option selected>Today</option>
-                                            <option value="1">Weekly</option>
-                                            <option value="2">Monthly</option>
-                                            <option value="3">Yearly</option>
-                                        </select>
-                                    </div> -->
-                                <h5 class="mb-0">Safety</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="safety" style="max-width:800px"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end sales  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- new customer  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <div class="card-header">
-                                <h5 class="mb-0">Meals</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="ct-chart-product ct-golden-section">
-                                    <canvas id="meals" style="max-width:800px"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end new customer  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- visitor  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- end visitor  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- total orders  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- end total orders  -->
-                    <!-- ============================================================== -->
-                </div>
+               
                 <div class="row">
                     <!-- ============================================================== -->
                     <!-- total revenue  -->
@@ -386,14 +240,12 @@
                         </div>
                     </div>
                 </div>
-                    <!-- ============================================================== -->
-                    <!-- end wrapper  -->
-                    <!-- ============================================================== -->
-                </div>
+                <!-- ============================================================== -->
+                <!-- end wrapper  -->
+                <!-- ============================================================== -->
+            </div>
             </div>
         </div>
-    </div>
-
 
 @code
 {
@@ -412,7 +264,7 @@
     private int[] activities = { 0, 0, 0, 0, 0 };
     private int[] all = { 0, 0, 0, 0, 0 };
     private string[] sentiment = { "0", "0", "0", "0", "0" };
-    private string[] doughnutlabels = { "Safety", "Academics", "Health", "Discipline", "Meals", "Activities" };
+    private string[] doughnutlabels = { "Academics", "Discipline", "Health", "Activities", "Safety", "Meals" };
     protected async override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
@@ -432,7 +284,7 @@
     {
         feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "school_feedbacks/" + SchoolCode, 5);
         school = await DatabaseHelper.ReadData<Schools>(Runtime, "Schools/" + SchoolCode);
-        int[] chartdata = { school.CategoryScores.Safety, school.CategoryScores.Academics, school.CategoryScores.Health, school.CategoryScores.Discipline, school.CategoryScores.Meals, school.CategoryScores.Activities };
+        int[] chartdata = { school.CategoryScores.Academics, school.CategoryScores.Discipline, school.CategoryScores.Health, school.CategoryScores.Activities, school.CategoryScores.Safety, school.CategoryScores.Meals};
         await Runtime.InvokeVoidAsync("DisplayDoughnutChart", "visitorcategory", doughnutlabels, chartdata);
         await Runtime.InvokeVoidAsync("DisplayDoughnutChart", "studentcategory", doughnutlabels, chartdata);
         for (int i = 0; i < feeds.Count; i++)
@@ -467,14 +319,31 @@
     }
     async void LoadCharts()
     {
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "academics", "Academics", dates, academics);
+        /* await Runtime.InvokeVoidAsync("DisplayColumnChart", "academics", "Academics", dates, academics);
         await Runtime.InvokeVoidAsync("DisplayColumnChart", "discipline", "Discipline", dates, discipline);
         await Runtime.InvokeVoidAsync("DisplayColumnChart", "health", "Health", dates, health);
         await Runtime.InvokeVoidAsync("DisplayColumnChart", "activities", "Activities", dates, activities);
         await Runtime.InvokeVoidAsync("DisplayColumnChart", "safety", "Safety", dates, safety);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "meals", "Meals", dates, meals);
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "meals", "Meals", dates, meals);*/
         await Runtime.InvokeVoidAsync("DisplayLineChart", "allline", dates, academics, discipline, health, activities, safety, meals);
         await Runtime.InvokeVoidAsync("DisplayColumnChart", "sentimentscore", "Sentiment Scores", dates, sentiment);
+        StateHasChanged();
+    }
+    async void LoadGraph(ChangeEventArgs _)
+    {
+        categoryselected = _.Value.ToString();
+        if (categoryselected == "0")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Academics", dates, academics);
+        else if (categoryselected == "1")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Discipline", dates, discipline);
+        else if (categoryselected == "2")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Health", dates, health);
+        else if (categoryselected == "3")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Activities", dates, activities);
+        else if (categoryselected == "4")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Safety", dates, safety);
+        else if (categoryselected == "5")
+            await Runtime.InvokeVoidAsync("DisplayColumnChart2", "all", "Meals", dates, meals);
         StateHasChanged();
     }
 }

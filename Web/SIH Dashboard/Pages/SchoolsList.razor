@@ -25,22 +25,24 @@
         {   
             <div id="schoolsecondcontainer">
             <DataTable Searchable="true">
-                <TableHolder ColumnNames="TableOption">
+                <TableHolder ColumnNames="@((GlobalUser.UID != null && GlobalUser.Role == Roles.Admin)?TableOption:TableOption.Take(11).ToArray())">
                     @foreach (var school in schools)
                     {
-                        <TableItem>
-                            <TableValue>@school.Id</TableValue>
-                            <TableValue>@school.Name</TableValue>
-                            <TableValue>@school.Address</TableValue>
-                            <TableValue>@school.CategoryScores.Safety</TableValue>
-                            <TableValue>@school.CategoryScores.Academics</TableValue>
-                            <TableValue>@school.CategoryScores.Health</TableValue>
-                            <TableValue>@school.CategoryScores.Discipline</TableValue>
-                            <TableValue>@school.CategoryScores.Meals</TableValue>
-                            <TableValue>@school.CategoryScores.Activities</TableValue>
-                            <TableValue>@school.CategoryScores.All</TableValue>
-                            <TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>
-                        </TableItem>
+                    <TableItem>
+                        <TableValue>@school.Id</TableValue>
+                        <TableValue>@school.Name</TableValue>
+                        <TableValue>@school.Address</TableValue>
+                        <TableValue>@school.CategoryScores.Safety</TableValue>
+                        <TableValue>@school.CategoryScores.Academics</TableValue>
+                        <TableValue>@school.CategoryScores.Health</TableValue>
+                        <TableValue>@school.CategoryScores.Discipline</TableValue>
+                        <TableValue>@school.CategoryScores.Meals</TableValue>
+                        <TableValue>@school.CategoryScores.Activities</TableValue>
+                        <TableValue>@school.CategoryScores.All</TableValue>
+                        <TableValue><a href="/schools/@school.Id/overview">View Overview</a></TableValue>
+                        @if (GlobalUser.UID != null && GlobalUser.Role == Roles.Admin)
+                        {<TableValue><a href="/schools/@school.Id/feedbacks">View Feedbacks</a></TableValue>}
+                    </TableItem>
                     }
                 </TableHolder>
             </DataTable>
@@ -72,7 +74,7 @@ else
     private bool firstrender = true;
     private string districtselected { get; set; } = null;
     private List<string> districtoptions = null;
-    private string[] TableOption = new string[] { "Code", "Name", "Address","Safety", "Academics", "Health", "Discipline", "Meals", "Activities", "All", "Feedbacks" };
+    private string[] TableOption = new string[] { "Code", "Name", "Address","Safety", "Academics", "Health", "Discipline", "Meals", "Activities", "All", "View Overview", "Feedbacks" };
     private List<Schools> schools = null;
     protected override void OnAfterRender(bool firstRender)
     {

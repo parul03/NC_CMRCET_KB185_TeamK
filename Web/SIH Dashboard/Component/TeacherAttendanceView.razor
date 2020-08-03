@@ -1,5 +1,10 @@
 ﻿@inject IJSRuntime Runtime
 <br />
+<style>
+    #td{
+        border: none;
+    }
+</style>
 
 @if (Record != null)
 {
@@ -8,14 +13,17 @@
     <div class="container">
         @if (Record != null)
         {
-            <br />
-            <h5>Roll Number: @Record.TeacherId </h5>
-            <br />
-            <h6>School Code : @Record.SchoolCode</h6>
-            <br />
-            <h6>Session : @Record.Session</h6>
-            <br />
-            <h6>Class Teacher of: @(Record.Class)</h6>
+            <div class="table">
+                <tr>
+                    <td id="td"><h5>Roll Number: @Record.TeacherId </h5></td>
+                    <td id="td"><h5>School Code : @Record.SchoolCode</h5></td>
+                </tr>
+                <tr>
+                    <td id="td"><h5>Session : @Record.Session</h5></td>
+                    <td id="td"><h5>Class Teacher of: @(Record.Class)</h5></td>
+                </tr>
+            </div>
+            
             @if (!hasUploadedToday())
             {
                 <button type="button" class="btn btn-primary flex-center" @onclick="Upload">Save Changes</button>
@@ -36,7 +44,7 @@
                         <MyTableValue Color="white">@sub.TotalClasses</MyTableValue>
                         @if (!hasUploadedToday())
                         {
-                            <MyTableValue Color="white"><input type="checkbox" class="form-control" @bind-value="sub.Todays" /></MyTableValue>
+                            <MyTableValue Color="white"><input id type="checkbox" class="form-control" @bind-value="sub.Todays" /></MyTableValue>
                         }
                         else
                         {

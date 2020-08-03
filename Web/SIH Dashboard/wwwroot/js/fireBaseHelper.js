@@ -239,3 +239,9 @@ async function verifyOpt(otp) {
         return e.message;
     }
 }
+
+async function VerifyFeedback(id, school_code, submitterid) {
+    await database.ref("school_feedbacks/" + school_code + "/" + id).set(true);
+    await database.ref("user_feedbacks/" + submitterid + "/" + id).set(true);
+    await database.ref("Verify/" + id).set(null);
+}

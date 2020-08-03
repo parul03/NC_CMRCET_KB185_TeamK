@@ -24,7 +24,8 @@
     }
     else
     {
-        if(hasSubmittedThisYear)
+        <div class="container">
+        @if(hasSubmittedThisYear)
         {
             <MyTableHolder HeaderColor="white" ColumnNames="colms">
                 @if (quizQuestions != null && yournewAnswers.Count>0)
@@ -82,6 +83,7 @@
             <button class="btn btn-primary" @onclick="SaveAnswers">Save Changes</button>
             }
         }
+        </div>
     }
 }
 

@@ -71,6 +71,16 @@
                         </div>
                     </div>
                 }
+                @if (GlobalUser.UID != null && GlobalUser.Role == Roles.Admin)
+                {
+                    <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-duration="1.4s">
+                        <div class="box">
+                            <div class="icon" style="background: #fff0da;"><i class="ion-ios-bookmarks-outline" style="color: #e98e06;"></i></div>
+                            <h4 class="title"><a href="/verifyfeedback">Verify Feedback</a></h4>
+                            <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata</p>
+                        </div>
+                    </div>
+                }
 
 
                 <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
@@ -81,7 +91,7 @@
                     </div>
                 </div>
 
-                @if (GlobalUser.UID == null || (GlobalUser.Role == Roles.Student))
+                @if (GlobalUser.UID != null && (GlobalUser.Role == Roles.Student))
                 {
                     <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-duration="1.4s">
                         <div class="box">
@@ -91,7 +101,7 @@
                         </div>
                     </div>
                 }
-                @if (GlobalUser.UID == null || (GlobalUser.Role == Roles.Teacher))
+                @if (GlobalUser.UID != null && (GlobalUser.Role == Roles.Teacher))
                 {
                     <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-duration="1.4s">
                         <div class="box">
@@ -101,6 +111,13 @@
                         </div>
                     </div>
                 }
+                <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+                    <div class="box">
+                        <div class="icon" style="background: #e6fdfc;"><i class="ion-ios-paper-outline" style="color: #3fcdc7;"></i></div>
+                        <h4 class="title"><a href="/districts">District Overviews</a></h4>
+                        <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
+                    </div>
+                </div>
 
             </div>
 

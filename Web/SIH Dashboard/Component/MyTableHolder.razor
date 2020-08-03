@@ -1,4 +1,4 @@
-﻿<div class="card rgba-black-light">
+﻿<div class="card " >
     <div class="card-body">
         <div id="table" class="table-editable">
 
@@ -23,6 +23,13 @@
     table td:first-child {
         width: 100%;
     }
+    .card{
+      box-shadow: none;
+    }
+    .card-body{
+	@* margin-left: 24rem; *@
+	border-radius: 20px;
+    }
 </style>
 @code
 {
@@ -33,6 +40,6 @@
     [Parameter]
     public bool Editable { get; set; } = false;
     [Parameter]
-    public string HeaderColor { get; set; } = "orange-text";
+    public string HeaderColor { get; set; } = "red-text";
 
 }

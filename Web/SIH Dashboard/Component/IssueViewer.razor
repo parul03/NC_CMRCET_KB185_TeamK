@@ -1,18 +1,26 @@
 ﻿
 @inject IJSRuntime Runtime
 
+
+<style>
+    #issuebtn{
+	width: 10rem;
+	margin-left: -2px;
+    }
+</style>
+
 @if (Statement != null)
 {
     if (Statement.OpenStatus == 0)
     {
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#basicExampleModal_@id">
-            View Full Issue
+        <button id="issuebtn"  type="button" class="btn btn-success" data-toggle="modal" data-target="#basicExampleModal_@id">
+            View  Issue
         </button>
     }
     else
     {
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#basicExampleModal_@id">
-            View Full Issue
+        <button id="issuebtn" type="button" class="btn btn-danger" data-toggle="modal" data-target="#basicExampleModal_@id">
+            View Issue
         </button>
     }
 }
