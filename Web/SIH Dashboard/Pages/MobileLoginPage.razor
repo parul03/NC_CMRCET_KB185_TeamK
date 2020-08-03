@@ -1,0 +1,116 @@
+﻿@page "/mobilelogin"
+@inject IJSRuntime Runtime
+@inject NavigationManager NavManager
+<NavBar />
+<input type="number" class="form-control mb-4" maxlength="10" placeholder="Phone Number" @bind="Number" />
+
+<div id="recaptcha-container"></div>
+<button class="btn purple-gradient white-text  waves-effect" id="otpbtn" @onclick="PhoneOtpSend">Send OTP</button>
+
+@if (CaptachaSolved)
+{
+<input type="number" class="form-control mb-4" maxlength="10" placeholder="Phone Number" @bind="VerifyNumber" />
+<button class="btn purple-gradient white-text  waves-effect" @onclick="OtpVerify">Verify OTP</button>
+}
+@if (Error != null)
+{
+<div class="alert-danger">
+
+</div>
+}
+
+@code
+{
+    bool CaptachaSolved = false;
+    string Number = "";
+    string VerifyNumber = "";
+    string numCopy;
+    string Error;
+
+    DotNetObjectReference<MobileLoginPage> DotNetObject;
+
+    async Task<bool> TestIfVistorPresent()
+    {
+        if (string.IsNullOrWhiteSpace(Number))
+            return false;
+        var dummy=await DatabaseHelper.ReadData<VistorDummy>(Runtime, "VisitorVerification/" + "9354882654" + "/");
+        if (dummy == null)
+            return false;
+        return dummy.verified;
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            DotNetObject = DotNetObjectReference.Create(this);
+            Capatcha();
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    async void Capatcha()
+    {
+        await Runtime.InvokeVoidAsync("UseCaptcha", "otpbtn", DotNetObject);
+    }
+    async void PhoneOtpSend()
+    {
+        var present = await TestIfVistorPresent();
+        if (present)
+        {
+            numCopy = Number;
+            if (!string.IsNullOrWhiteSpace(numCopy))
+            {
+                var error = await Runtime.InvokeAsync<string>("SignInPhone", Number);
+                Error = error;
+            }
+            else
+            {
+                Error = "Null number";
+            }
+        }
+        else
+        {
+            Error = "you are not eligible as Visitor..";
+        }
+        StateHasChanged();
+    }
+    async void OtpVerify()
+    {
+        if (!string.IsNullOrWhiteSpace(VerifyNumber))
+        {
+            var error = await Runtime.InvokeAsync<string>("verifyOpt", VerifyNumber);
+            if (error == null)
+            {
+                GlobalUser.Role = Roles.VisitingOfficial;
+                GlobalUser.UID = numCopy;
+                Console.WriteLine(numCopy+" logged in");
+                NavManager.NavigateTo("/");
+            }
+            else
+                Error = error;
+        }
+        else
+        {
+            Error = "Null otp";
+        }
+        StateHasChanged();
+    }
+
+    [JSInvokable("CPCLK")]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public async Task __CaptchaCallBack__()
+    {
+        CaptachaSolved = true;
+        PhoneOtpSend();
+        StateHasChanged();
+    }
+    [JSInvokable("CPCLKF")]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public async Task __CaptchaCallBackF__()
+    {
+        CaptachaSolved = false;
+        StateHasChanged();
+    }
+}
