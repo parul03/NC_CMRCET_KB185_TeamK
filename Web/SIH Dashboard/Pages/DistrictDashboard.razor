@@ -1,23 +1,19 @@
-﻿@page "/schools/{SchoolCode}/overview/"
+﻿@page "/district/{District}"
 @inject IJSRuntime Runtime
 @inject NavigationManager NavManager
-<link rel="stylesheet" href="css/generalchart.css">
-<link rel="stylesheet" href="css/chart-table.css">
 <NavBar />
-
 <style>
- 
-    .card-header{
+
+    .card-header {
         background: black;
         color: white;
     }
-    h5{
-	font-weight: bolder;
-	font-family: inherit;
-    text-align: center;
-    }
 
-      
+    h5 {
+        font-weight: bolder;
+        font-family: inherit;
+        text-align: center;
+    }
 </style>
 
 @* <div id="intro"></div> *@
@@ -36,7 +32,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 id="h2overview" class="pageheader-title">School Overview - @(school==null?SchoolCode:school.Name) </h2>
+                            <h2 id="h2overview" class="pageheader-title">District Overview - @District </h2>
                         </div>
                     </div>
                 </div>
@@ -49,7 +45,7 @@
                     <!-- ============================================================== -->
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="card" style="height: 28rem;" id="overviewcard">
-                            <h5 class="card-header">Visitor Category</h5>
+                            <h5 class="card-header">District Scores</h5>
                             <div class="card-body">
                                 <div class="ct-chart-category ct-golden-section" style="height: 315px;">
                                     <canvas id="visitorcategory" width="100%" height="100%"></canvas>
@@ -72,7 +68,7 @@
                                             <option value="3">Yearly</option>
                                         </select>
                                     </div> -->
-                                <h5 class="mb-0"> Line</h5>
+                                <h5 class="mb-0">Top School Scores</h5>
                             </div>
                             <div class="card-body">
                                 <div class="ct-chart-product ct-golden-section">
@@ -89,50 +85,48 @@
                         <!-- top perfomimg  -->
                         <!-- ============================================================== -->
                         <div class="card" id="overviewcard">
-                            <h5 class="card-header">Facilities</h5>
+                            <h5 class="card-header">Top Schools</h5>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table no-wrap p-table">
                                         <thead class="bg-light">
                                             <tr class="border-0">
-                                                <th class="border-0">Facilities</th>
-                                                <th class="border-0">Availibility</th>
+                                                <th class="border-0">School</th>
+                                                <th class="border-0">Score</th>
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Fan</td>
-                                                <td>Yes</td>
+                                            @if (allsorted != null)
+                                            {
+                                                <tr>
+                                                    <td>@allsorted[0].Name</td>
+                                                    <td>@allsorted[0].CategoryScores.All</td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Desks</td>
-                                                <td>No </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@allsorted[1].Name</td>
+                                                    <td>@allsorted[1].CategoryScores.All</td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Labs</td>
-                                                <td>Yes </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@allsorted[2].Name</td>
+                                                    <td>@allsorted[2].CategoryScores.All</td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Playground</td>
-                                                <td>No </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@allsorted[3].Name</td>
+                                                    <td>@allsorted[3].CategoryScores.All</td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Water Cooler</td>
-                                                <td>Yes </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@allsorted[4].Name</td>
+                                                    <td>@allsorted[4].CategoryScores.All</td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Washrooms</td>
-                                                <td>No </td>
-
-                                            </tr>
-                                            <tr>
-                                            </tr>
+                                                </tr>
+                                                <tr>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -199,7 +193,7 @@
                                     </div> -->
                                 <h5 class="mb-0">Discipline</h5>
                             </div>
-                            <div class="card-body" >
+                            <div class="card-body">
                                 <div class="ct-chart-product ct-golden-section">
                                     <canvas id="discipline" style="max-width:800px"></canvas>
                                 </div>
@@ -354,127 +348,62 @@
                     <!-- end total orders  -->
                     <!-- ============================================================== -->
                 </div>
-                <div class="row">
-                    <!-- ============================================================== -->
-                    <!-- total revenue  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- category revenue  -->
-                    <!-- ============================================================== -->
-                    <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <h5 class="card-header">Student Categories</h5>
-                            <div class="card-body">
-                                <canvas id="studentcategory" style="max-width:800px"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end category revenue  -->
-                    <!-- ============================================================== -->
-
-                    <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
-                        <div class="card" id="overviewcard">
-                            <h5 class="card-header">Sentiment Scores</h5>
-                            <div class="card-body">
-                                <canvas id="sentimentscore" style="max-width:800px"></canvas>
-                            </div>
-                            <div class="card-footer">
-                                <p class="display-7 font-weight-bold"><span class="text-primary d-inline-block"></span><span class="text-success float-right"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <!-- ============================================================== -->
-                    <!-- end wrapper  -->
-                    <!-- ============================================================== -->
-                </div>
+                <!-- ============================================================== -->
+                <!-- end wrapper  -->
+                <!-- ============================================================== -->
             </div>
         </div>
     </div>
+</div>
 
-
-@code
-{
+@code {
     [Parameter]
-    public string SchoolCode { get; set; }
-    private string categoryselected { get; set; }
-    private List<Feedbacks> feeds = null;
-    private bool chartnotmade = true;
-    private Schools school = null;
-    private string[] dates = { "NA", "NA", "NA", "NA", "NA" };
-    private int[] safety = { 0, 0, 0, 0, 0 };
-    private int[] academics = { 0, 0, 0, 0, 0 };
-    private int[] health = { 0, 0, 0, 0, 0 };
-    private int[] discipline = { 0, 0, 0, 0, 0 };
-    private int[] meals = { 0, 0, 0, 0, 0 };
-    private int[] activities = { 0, 0, 0, 0, 0 };
-    private int[] all = { 0, 0, 0, 0, 0 };
-    private string[] sentiment = { "0", "0", "0", "0", "0" };
-    private string[] doughnutlabels = { "Safety", "Academics", "Health", "Discipline", "Meals", "Activities" };
-    protected async override void OnAfterRender(bool firstRender)
+    public string District { get; set; }
+
+    private bool firstrender = false;
+    private CategoryScores districtscore = null;
+    private List<Schools> schools = null;
+    private List<Schools> academicsorted = null;
+    private List<Schools> safetysorted = null;
+    private List<Schools> healthsorted = null;
+    private List<Schools> disciplinesorted = null;
+    private List<Schools> mealssorted = null;
+    private List<Schools> activitiessorted = null;
+    private List<Schools> allsorted = null;
+    protected override void OnAfterRender(bool firstRender)
     {
+        base.OnAfterRender(firstRender);
         if (firstRender)
         {
-            LoadFeed();
+            LoadSchools();
         }
         else
         {
-            if (chartnotmade)
-            {
-                LoadCharts();
-                chartnotmade = false;
-            }
+            firstrender = false;
         }
     }
-    async void LoadFeed()
+    async void LoadSchools()
     {
-        feeds = await DatabaseHelper.GetFeedbacks<List<Feedbacks>>(Runtime, "school_feedbacks/" + SchoolCode, 5);
-        school = await DatabaseHelper.ReadData<Schools>(Runtime, "Schools/" + SchoolCode);
-        int[] chartdata = { school.CategoryScores.Safety, school.CategoryScores.Academics, school.CategoryScores.Health, school.CategoryScores.Discipline, school.CategoryScores.Meals, school.CategoryScores.Activities };
-        await Runtime.InvokeVoidAsync("DisplayDoughnutChart", "visitorcategory", doughnutlabels, chartdata);
-        await Runtime.InvokeVoidAsync("DisplayDoughnutChart", "studentcategory", doughnutlabels, chartdata);
-        for (int i = 0; i < feeds.Count; i++)
-        {
-            var feed = feeds[i];
-            dates[i] = feed.Date;
-            sentiment[i] = await SentimentalAnalysis.GetFeedbackSentiment(Runtime, feed);
-            for (int j = 0; j < feed.Feedback.Length; j++)
-            {
-                int ch;
-                if (feed.Feedback[j] == 't' || feed.Feedback[j] == 'f')
-                    ch = (feed.Feedback[j] == 't') ? 10 : 0;
-                else
-                    ch = (int)(feed.Feedback[j] - '0');
-                if (ch == 0)
-                    ch = 10;
-                if (j < 12)
-                    academics[i] += ch;
-                else if (j < 22)
-                    discipline[i] += ch;
-                else if (j < 32)
-                    health[i] += ch;
-                else if (j < 42)
-                    activities[i] += ch;
-                else if (j < 69)
-                    safety[i] += ch;
-                else if (j < 78)
-                    meals[i] += ch;
-            }
-        }
+        string[] donutlabel = {"Academics", "Discipline", "Health", "Activitites", "Safety", "Meals"};
+        schools = await DatabaseHelper.GetSchools<List<Schools>>(Runtime, "Districts/" + District);
+        districtscore = await DatabaseHelper.ReadData<CategoryScores>(Runtime, "DistrictScores/" + District);
+        int[] chartdata = {districtscore.Academics, districtscore.Discipline, districtscore.Health, districtscore.Activities, districtscore.Safety, districtscore.Meals };
+        await Runtime.InvokeVoidAsync("DisplayDoughnutChart", "visitorcategory", donutlabel, chartdata);
+        academicsorted = schools.OrderByDescending(x => x.CategoryScores.Academics).Take(5).ToList();
+        safetysorted = schools.OrderByDescending(x => x.CategoryScores.Safety).Take(5).Take(5).ToList();
+        healthsorted = schools.OrderByDescending(x => x.CategoryScores.Health).Take(5).ToList();
+        disciplinesorted = schools.OrderByDescending(x => x.CategoryScores.Discipline).Take(5).ToList();
+        mealssorted = schools.OrderByDescending(x => x.CategoryScores.Meals).Take(5).ToList();
+        activitiessorted = schools.OrderByDescending(x => x.CategoryScores.Activities).Take(5).ToList();
+        allsorted = schools.OrderByDescending(x => x.CategoryScores.All).Take(5).ToList();
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "academics", "Academics", academicsorted.Select(sch => sch.Name).ToArray(), academicsorted.Select(sch => sch.CategoryScores.Academics).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "discipline", "Discipline", disciplinesorted.Select(sch => sch.Name).ToArray(), disciplinesorted.Select(sch => sch.CategoryScores.Discipline).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "health", "Health", healthsorted.Select(sch => sch.Name).ToArray(), healthsorted.Select(sch => sch.CategoryScores.Health).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "activities", "Activities", activitiessorted.Select(sch => sch.Name).ToArray(), activitiessorted.Select(sch => sch.CategoryScores.Activities).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "safety", "Safety", safetysorted.Select(sch => sch.Name).ToArray(), safetysorted.Select(sch => sch.CategoryScores.Safety).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayColumnChart", "meals", "Meals", mealssorted.Select(sch => sch.Name).ToArray(), mealssorted.Select(sch => sch.CategoryScores.Meals).ToArray());
+        await Runtime.InvokeVoidAsync("DisplayLineChart", "allline", allsorted.Select(sch => sch.Name).ToArray(), allsorted.Select(sch => sch.CategoryScores.Academics).ToArray(), allsorted.Select(sch => sch.CategoryScores.Discipline).ToArray(), allsorted.Select(sch => sch.CategoryScores.Health).ToArray(), allsorted.Select(sch => sch.CategoryScores.Activities).ToArray(), allsorted.Select(sch => sch.CategoryScores.Safety).ToArray(), allsorted.Select(sch => sch.CategoryScores.Meals).ToArray());
         StateHasChanged();
     }
-    async void LoadCharts()
-    {
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "academics", "Academics", dates, academics);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "discipline", "Discipline", dates, discipline);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "health", "Health", dates, health);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "activities", "Activities", dates, activities);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "safety", "Safety", dates, safety);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "meals", "Meals", dates, meals);
-        await Runtime.InvokeVoidAsync("DisplayLineChart", "allline", dates, academics, discipline, health, activities, safety, meals);
-        await Runtime.InvokeVoidAsync("DisplayColumnChart", "sentimentscore", "Sentiment Scores", dates, sentiment);
-        StateHasChanged();
-    }
+
 }

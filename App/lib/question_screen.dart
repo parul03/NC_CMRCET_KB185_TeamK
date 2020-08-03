@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// changed in 2nd branch
-
 class QuestionScreen extends StatelessWidget {
   final String questionText;
 
@@ -39,11 +37,9 @@ class QuestionScreen extends StatelessWidget {
             questionText,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white,
-              fontSize: 25,
-              fontFamily: 'Chalktastic',
-              //fontWeight: FontWeight.bold,
-            ),
+                color: Colors.white, fontSize: 20, fontStyle: FontStyle.italic
+                //fontWeight: FontWeight.bold,
+                ),
           ),
         ),
       ),

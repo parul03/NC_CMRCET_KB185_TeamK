@@ -1722,3 +1722,108 @@ border-radius: 30px;
   }
 }
 /* --------------------- */
+
+/* _____________________________ */
+/* ProblemPage UI */
+/* -------------------------- */
+#jumboimg{
+  background: url(./img/pen1.svg);
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  width: 9rem;
+  background-position: center;
+  position: absolute;
+  background-size: 86px;
+  margin-left: 75rem;
+  margin-top: 10rem;
+  background-color: #f5faff;
+}
+#problemjumbo{
+background-color:#f5faff;
+color: #b8e3ef;
+box-shadow: 11px 10px 20px;
+width: 50%;
+margin-left: 27rem;
+margin-top: 7rem;
+padding: 7rem 0rem;
+border-radius: 20px;
+font-weight: 900;
+}
+
+#inputprob{
+  margin-left: 11rem;
+  width: 31rem;
+  height: 4rem;
+  margin-bottom: 11px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+
+/* ----------------------- */ 
+#overviewcard{
+        margin-top: 24px;
+        border-radius: 8px;
+      
+    }
+    #overviewcontainer{
+    margin-top: 5px;
+    background: aliceblue;
+    border-radius: 20px;
+    box-shadow: 14px 32px 37px;
+    }
+
+    /* _______________________ */
+    /* School Overview */
+  #overviewcard{
+      margin-top: 24px;
+      border-radius: 8px;
+  }
+
+  #overviewcontainer{
+  margin-top: 5px;
+  background: aliceblue;
+  border-radius: 20px;
+  box-shadow: 14px 32px 37px;
+  }
+
+  #h2overview{
+    font-size: 3rem;
+    text-align: center;
+    font-family: inherit;
+    background: white;
+    border-radius: 2rem;
+    width: 42rem;
+    margin-left: 12rem;
+    margin-top: 2rem;
+    }
+
+  @media only screen and (max-width:768px)
+  {
+    #h2overview {
+      font-size: 3rem;
+      text-align: center;
+      font-family: inherit;
+      background: white;
+      border-radius: 2rem;
+      width: 27rem;
+      margin-left: 7rem;
+      margin-top: 2rem;
+    }
+  }
+  @media only screen and (max-width: 375px)
+  {
+    #h2overview {
+      font-size: 3rem;
+      text-align: center;
+      font-family: inherit;
+      background: white;
+      border-radius: 2rem;
+      width: 19rem;
+      margin-left: 1rem;
+      margin-top: 2rem;
+    }
+  }
+    /* _____________________________ */
+
+/* ________________________________ */

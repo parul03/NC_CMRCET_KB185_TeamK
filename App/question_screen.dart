@@ -12,12 +12,16 @@ class QuestionScreen extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 2,
       decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/blackboard.png'),
+          fit: BoxFit.fill,
+        ),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.7),
-            blurRadius: 20,
-            spreadRadius: 10,
-          )
+          // BoxShadow(
+          //   color: Colors.black.withOpacity(0.7),
+          //   blurRadius: 20,
+          //   spreadRadius: 10,
+          // )
         ],
         color: Colors
             .indigo, //(questionsController.currentQuestion * 100) % 400 + 400],

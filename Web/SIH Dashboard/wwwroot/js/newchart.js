@@ -1,6 +1,4 @@
 ﻿function DisplayColumnChart(id, lab, labs, dat) {
-    document.getElementById("graph-container").innerHTML = '&nbsp;';
-    document.getElementById("graph-container").innerHTML = '<canvas id="' + id +'" style="max-width: 1000px;"></canvas>';
     var ctx = document.getElementById(id).getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -48,16 +46,16 @@
         }
     });
 }
-function DisplayLineChart(id, dates, cat1, cat2, cat3, sent) {
-    document.getElementById("graph-container").innerHTML = '&nbsp;';
-    document.getElementById("graph-container").innerHTML = '<canvas id="' + id + '" style="max-width: 1000px;"></canvas>';
+function DisplayLineChart(id, dates, cat1, cat2, cat3, cat4, cat5, cat6) {
+    //document.getElementById("graph-container").innerHTML = '&nbsp;';
+    //document.getElementById("graph-container").innerHTML = '<canvas id="' + id + '" style="max-width: 200px;"></canvas>';
     var ctxL = document.getElementById(id).getContext('2d');
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: "Category 1",
+                label: "Academics",
                 data: cat1,
                 backgroundColor: [
                     'rgba(105, 0, 132, .2)',
@@ -68,30 +66,52 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, sent) {
                 borderWidth: 2
             },
             {
-                label: "Category 2",
+                label: "Discipline",
                 data: cat2,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(242, 242, 111, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(255, 229, 0, .7)',
                 ],
                 borderWidth: 2
             },
             {
-                label: "Category 3",
+                label: "Health",
                 data: cat3,
                 backgroundColor: [
-                    'rgba(0, 137, 132, .2)',
+                    'rgba(186, 242, 192, .2)',
                 ],
                 borderColor: [
-                    'rgba(0, 10, 130, .7)',
+                    'rgba(89, 255, 0, .7)',
                 ],
                 borderWidth: 2
             },
             {
-                label: "Sentiment",
-                data: sent,
+                label: "Activities",
+                data: cat4,
+                backgroundColor: [
+                    'rgba(244, 212, 173, .2)',
+                ],
+                borderColor: [
+                    'rgba(247, 151, 7, .7)',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: "Safety",
+                data: cat5,
+                backgroundColor: [
+                    'rgba(177, 237, 237, .2)',
+                ],
+                borderColor: [
+                    'rgba(191, 242, 238, .7)',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: "Meals",
+                data: cat6,
                 backgroundColor: [
                     'rgba(0, 137, 132, .2)',
                 ],
@@ -107,20 +127,25 @@ function DisplayLineChart(id, dates, cat1, cat2, cat3, sent) {
         }
     });
 }
-function DisplayDoughnutChart(labels, chartdata) {
-    var ctxD = document.getElementById("doughnutChart").getContext('2d');
+function DisplayDoughnutChart(id, labels, chartdata) {
+    var ctxD = document.getElementById(id).getContext('2d');
     var myLineChart = new Chart(ctxD, {
         type: 'doughnut',
         data: {
             labels: labels,
             datasets: [{
+                
                 data: chartdata,
                 backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360", "#4D5360"],
                 hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774", "#616774"]
             }]
         },
         options: {
+            legend: {
+                display: false
+            },
             responsive: true
+
         }
     });
 }
