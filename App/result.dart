@@ -41,7 +41,7 @@ class _ResultState extends State<Result> {
                 DateTime.now().month.toString() +
                 "/" +
                 DateTime.now().year.toString(),
-            5682,
+            int.parse(schoolCode),
             GlobalUser.no,
             "",
             score)
@@ -49,19 +49,22 @@ class _ResultState extends State<Result> {
 
     FirebaseDatabase.instance
         .reference()
-        .child("school_feedbacks")
-        .child("1234")
-        .update({GlobalUser.key.key.toString(): true});
-
-    FirebaseDatabase.instance
-        .reference()
-        .child("user_feedbacks")
-        .child(GlobalUser.no)
-        .set({GlobalUser.key.key.toString(): true}).whenComplete(() {
+        .child("Verify")
+        .update({GlobalUser.key.key.toString(): true}).whenComplete(() {
       setState(() {
         loading = false;
       });
     });
+
+    // FirebaseDatabase.instance
+    //     .reference()
+    //     .child("user_feedbacks")
+    //     .child(GlobalUser.no)
+    //     .set({GlobalUser.key.key.toString(): true}).whenComplete(() {
+    //   setState(() {
+    //     loading = false;
+    //   });
+    // });
 
     GlobalUser.quiz = true;
   }
