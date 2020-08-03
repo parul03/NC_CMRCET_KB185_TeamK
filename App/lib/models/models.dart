@@ -87,3 +87,5 @@ enum Roles { Admin, VisitingOfficial, Teacher, Student }
 List<QuizQuestion> quizQuestions = List();
 String remarks = "";
 List<String> imageUrl = List();
+String schoolCode = "";
+String schoolName = "";
